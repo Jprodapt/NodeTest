@@ -1,8 +1,8 @@
 Run the below command to install dependencies
-npm install
+#npm install
 
 To run the server 
-node index.js
+#node index.js
 
 Url to hit 
-http://localhost:3000/basketball
+#http://localhost:3000/basketball
