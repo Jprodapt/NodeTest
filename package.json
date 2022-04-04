@@ -1,0 +1,10 @@
+{
+
+  "dependencies": {
+    "express": "^4.17.3",
+    "lil-gui": "^0.16.1",
+    "requirejs": "^2.3.6",
+    "socket.io": "^4.4.1",
+    "three-orbitcontrols": "^2.110.3"
+  }
+}

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+
+<script type="importmap">{
+        "imports": {
+            "three": "https://threejs.org/build/three.module.js"
+        }
+    }</script>
+
+<body style='margin: 0px; background-color: #d8d8d8; overflow: hidden;'>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+        <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from '/OrbitControls.js'
+        import { GUI } from '/lil-gui.module.min.js';
+        //import { OrbitControls } from '/OrbitControls.js';
+        
+        
+
+        const gui = new GUI();
+
+
+
+        var obj = {
+            "Left half color": '#00ff00',
+            "Court color": '#00ff00',
+            "Right half color": '#156289',
+            "Border color": '#ffffff',
+            "Keys color": "#f53259",
+            "Line color": "#ff0000",
+            
+        }
+
+        gui.addColor(obj, 'Left half color').onChange(value => {
+            console.log(value);
+            plane1Mesh.material.color = new THREE.Color(value);
+            renderer.render(scene, camera);
+        });;
+
+        gui.addColor(obj, 'Right half color').onChange(value => {
+            console.log(value);
+            plane2Mesh.material.color = new THREE.Color(value);
+            renderer.render(scene, camera);
+        });;
+
+        gui.addColor(obj, 'Court color').onChange(value => {
+            console.log(value);
+            plane1Mesh.material.color = new THREE.Color(value);
+            plane2Mesh.material.color = new THREE.Color(value);
+            renderer.render(scene, camera);
+        });;
+
+        gui.addColor(obj, 'Border color').onChange(value => {
+            console.log(value);
+            borderupPlane1Mesh.material.color = new THREE.Color(value);
+            borderbottomPlane1Mesh.material.color = new THREE.Color(value);
+            borderleftPlane1Mesh.material.color = new THREE.Color(value);
+            borderrightPlane1Mesh.material.color = new THREE.Color(value);
+            renderer.render(scene, camera);
+        });;
+        gui.addColor(obj, 'Keys color').onChange(value => {
+            console.log(value);
+            keysrightPlane1Mesh.material.color = new THREE.Color(value);
+            keysleftPlane1Mesh.material.color = new THREE.Color(value);
+            renderer.render(scene, camera);
+        });;
+        gui.addColor(obj, 'Line color').onChange(value => {
+            console.log(value);
+            ellipseRight.material.color = new THREE.Color(value);
+            ellipseLeft.material.color = new THREE.Color(value);
+            ellipseLeftBig.material.color = new THREE.Color(value);
+            ellipseRightBig.material.color = new THREE.Color(value);
+            renderer.render(scene, camera);
+        });;
+
+
+        const teamLogoFolder = gui.addFolder('Team Logo')
+        var team = { "Pick a team": '' }
+        gui.add(team, 'Pick a team', { 'Boston': 'A', 'Golden State': 'B', 'Detroit': 'C' }).onChange(value => {
+            console.log(value);
+            if (value == 'A') {
+                centerCircleMesh.material.map = new THREE.TextureLoader().load('boston.png')
+            }
+            if (value == 'B') {
+                centerCircleMesh.material.map = new THREE.TextureLoader().load('warriors.png')
+            }
+            if (value == 'C') {
+                centerCircleMesh.material.map = new THREE.TextureLoader().load('detroit.png')
+            }
+
+        });
+
+
+        teamLogoFolder.close()
+
+
+        var button = document.getElementById("changecolor1");
+        button.addEventListener("click", onButtonClick1, false);
+        var button = document.getElementById("changecolor2");
+        button.addEventListener("click", onButtonClick2, false);
+
+
+        // init renderer
+        var renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // var scene = new THREE.Scene();
+        // scene.background = new THREE.Color("#fff");
+        // var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+        // camera.position.z = 20;
+        let HEIGHT = window.innerHeight;
+	    let WIDTH = window.innerWidth;
+
+	    // Create the scene
+	    var scene = new THREE.Scene();
+
+        scene.fog = new THREE.Fog(0xf7d9aa, 100, 950);
+        scene.background = new THREE.Color("#fff");
+
+        // Create the camera
+        var aspectRatio = WIDTH / HEIGHT;
+        var fieldOfView = 10;
+        var nearPlane = 1;
+        var farPlane = 10000;
+        var camera = new THREE.PerspectiveCamera(
+            fieldOfView,
+            aspectRatio,
+            nearPlane,
+            farPlane
+        );
+
+        // Set the position of the camera
+        camera.position.x = 0;
+        camera.position.z = 40;
+        camera.position.y = 0;
+
+        var controls = new OrbitControls(camera, renderer.domElement);
+
+      
+
+        var geometry1 = new THREE.PlaneGeometry(10, 10);
+        var material1 = new THREE.MeshBasicMaterial({ color: 0x2c9fd8, side: THREE.DoubleSide });
+        var plane1Mesh = new THREE.Mesh(geometry1, material1);
+        plane1Mesh.position.set(0, 0, 0);
+
+
+
+        var geometry2 = new THREE.PlaneGeometry(10, 10);
+        var material2 = new THREE.MeshBasicMaterial({ color: 0x2c9fd8, side: THREE.DoubleSide });
+        var plane2Mesh = new THREE.Mesh(geometry2, material2);
+        plane2Mesh.position.set(10, 0, 0);
+
+
+        var borderupGeometry = new THREE.PlaneGeometry(22, 1.2);
+        var borderupMaterial = new THREE.MeshBasicMaterial({ color: 0xc9ff05, side: THREE.DoubleSide });
+        var borderupPlane1Mesh = new THREE.Mesh(borderupGeometry, borderupMaterial);
+        borderupPlane1Mesh.position.set(5, 5.6, 0);
+
+        var borderbottomGeometry = new THREE.PlaneGeometry(22, 1.2);
+        var borderbottomMaterial = new THREE.MeshBasicMaterial({ color: 0xc9ff05, side: THREE.DoubleSide });
+        var borderbottomPlane1Mesh = new THREE.Mesh(borderbottomGeometry, borderbottomMaterial);
+        borderbottomPlane1Mesh.position.set(5, -5.6, 0);
+
+        var borderleftGeometry = new THREE.PlaneGeometry(1, 12);
+        var borderleftMaterial = new THREE.MeshBasicMaterial({ color: 0xc9ff05, side: THREE.DoubleSide });
+        var borderleftPlane1Mesh = new THREE.Mesh(borderleftGeometry, borderleftMaterial);
+        borderleftPlane1Mesh.position.set(-5.5, 0, 0);
+
+        var borderrightGeometry = new THREE.PlaneGeometry(1, 12);
+        var borderrightMaterial = new THREE.MeshBasicMaterial({ color: 0xc9ff05, side: THREE.DoubleSide });
+        var borderrightPlane1Mesh = new THREE.Mesh(borderrightGeometry, borderrightMaterial);
+        borderrightPlane1Mesh.position.set(15.5, 0, 0);
+
+
+        var linegeometry2 = new THREE.PlaneGeometry(0.05, 10);
+        var linematerial2 = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+        var lineplane2Mesh = new THREE.Mesh(linegeometry2, linematerial2);
+        lineplane2Mesh.position.set(5, 0, 0);
+
+         //Pole left
+        const poleLgeometry = new THREE.CylinderGeometry( 0.1, 0.1, 3, 5 );
+        const poleLmaterial = new THREE.MeshBasicMaterial( {color: 0x465962} );
+        const poleLcylinder = new THREE.Mesh( poleLgeometry, poleLmaterial );
+        poleLcylinder.position.set(-5, 0, 1.5);
+        poleLcylinder.rotation.x = Math.PI / 2;
+
+        //Hoop left
+        var hoopLeftGeometry = new THREE.PlaneGeometry(2.5, 1.5);
+        var hoopLeftMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff,
+             side: THREE.DoubleSide,
+             map: new THREE.TextureLoader().load('hoop3.jpg') });
+        var hoopLeftPlane1Mesh = new THREE.Mesh(hoopLeftGeometry, hoopLeftMaterial);
+        hoopLeftPlane1Mesh.position.set(-4.85, 0, 2.5);
+        hoopLeftPlane1Mesh.rotation.y = Math.PI/2;
+        hoopLeftPlane1Mesh.rotation.z = Math.PI/2;
+       
+
+
+         //Pole right
+        const poleRgeometry = new THREE.CylinderGeometry( 0.1, 0.1, 3, 5 );
+        const poleRmaterial = new THREE.MeshBasicMaterial( {color: 0x465962} );
+        const poleRcylinder = new THREE.Mesh( poleRgeometry, poleRmaterial );
+        poleRcylinder.position.set(15, 0, 1.5);
+        poleRcylinder.rotation.x = Math.PI / 2;
+
+        //Hoop right
+        var hoopRightGeometry = new THREE.PlaneGeometry(2.5, 1.5);
+        var hoopRightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff,
+             side: THREE.DoubleSide,
+             map: new THREE.TextureLoader().load('hoop3.jpg') });
+        var hoopRightPlane1Mesh = new THREE.Mesh(hoopRightGeometry, hoopRightMaterial);
+        hoopRightPlane1Mesh.position.set(14.85, 0, 2.5);
+        hoopRightPlane1Mesh.rotation.y = Math.PI/2;
+        hoopRightPlane1Mesh.rotation.z = Math.PI/2;
+
+
+
+        const centerCircleGeometry = new THREE.CircleGeometry(2, 50);
+        const centerCircleMaterial = new THREE.MeshBasicMaterial({
+            //
+            side: THREE.DoubleSide,
+            depthWrite: true,
+            map: new THREE.TextureLoader().load('basketball1.jpg')
+
+        });
+        const centerCircleMesh = new THREE.Mesh(centerCircleGeometry, centerCircleMaterial);
+        centerCircleMesh.position.set(5, 0, 0.025);
+
+
+        const curveLeft = new THREE.EllipseCurve(
+            0, 0,            // ax, aY
+            1.5, 1.5,           // xRadius, yRadius
+            1.5 * Math.PI, 0.5 * Math.PI,  // aStartAngle, aEndAngle
+            false,            // aClockwise
+            0                 // aRotation
+        );
+        const curveLPoints = curveLeft.getPoints(50);
+        const curveLGeometry = new THREE.BufferGeometry().setFromPoints(curveLPoints);
+        const curveLMaterial = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 100 });
+        // Create the final object to add to the scene
+        const ellipseLeft = new THREE.Line(curveLGeometry, curveLMaterial);
+
+        const curveRight = new THREE.EllipseCurve(
+            10, 0,            // ax, aY
+            1.5, 1.5,           // xRadius, yRadius
+            0.5 * Math.PI, 1.5 * Math.PI,  // aStartAngle, aEndAngle
+            false,            // aClockwise
+            0                 // aRotation
+        );
+        const curveRPoints = curveRight.getPoints(50);
+        const curveRGeometry = new THREE.BufferGeometry().setFromPoints(curveRPoints);
+        const curveRMaterial = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 10 });
+        // Create the final object to add to the scene
+        const ellipseRight = new THREE.Line(curveRGeometry, curveRMaterial);
+
+
+        var keysrightGeometry = new THREE.PlaneGeometry(5, 3);
+        var keysrightMaterial = new THREE.MeshBasicMaterial({ color: 0xf53259, side: THREE.DoubleSide });
+        var keysrightPlane1Mesh = new THREE.Mesh(keysrightGeometry, keysrightMaterial);
+        keysrightPlane1Mesh.position.set(12.5, 0, 0.025);
+
+        var keysleftGeometry = new THREE.PlaneGeometry(5, 3);
+        var keysleftMaterial = new THREE.MeshBasicMaterial({ color: 0xf53259, side: THREE.DoubleSide });
+        var keysleftPlane1Mesh = new THREE.Mesh(keysleftGeometry, keysleftMaterial);
+        keysleftPlane1Mesh.position.set(-2.5, 0, 0.025);
+
+        const curveLeftBig = new THREE.EllipseCurve(
+            -5, 0,            // ax, aY
+            6.57, 5,           // xRadius, yRadius
+            1.5 * Math.PI, 0.5 * Math.PI,  // aStartAngle, aEndAngle
+            false,            // aClockwise
+            0                 // aRotation
+        );
+        const curveLPointsBig = curveLeftBig.getPoints(100);
+        const curveLGeometryBig = new THREE.BufferGeometry().setFromPoints(curveLPointsBig);
+        const curveLMaterialBig = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 100 });
+        // Create the final object to add to the scene
+        const ellipseLeftBig = new THREE.Line(curveLGeometryBig, curveLMaterialBig);
+
+        const curveRightBig = new THREE.EllipseCurve(
+            15, 0,            // ax, aY
+            6.57, 5,           // xRadius, yRadius
+            0.5 * Math.PI, 1.5 * Math.PI,  // aStartAngle, aEndAngle
+            false,            // aClockwise
+            0                 // aRotation
+        );
+        const curveRPointsBig = curveRightBig.getPoints(50);
+        const curveRGeometryBig = new THREE.BufferGeometry().setFromPoints(curveRPointsBig);
+        const curveRMaterialBig = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 10 });
+        // Create the final object to add to the scene
+        const ellipseRightBig = new THREE.Line(curveRGeometryBig, curveRMaterialBig);
+
+       
+
+
+
+        //create a group and add the two cubes
+        //These cubes can now be rotated / scaled etc as a group
+        const group = new THREE.Group();
+        // group.add(cubeA);
+        // group.add(cubeB);
+        group.add(borderupPlane1Mesh);
+        group.add(plane1Mesh);
+        group.add(plane2Mesh);
+        group.add(borderbottomPlane1Mesh);
+        group.add(borderleftPlane1Mesh);
+        group.add(borderrightPlane1Mesh);
+        group.add(centerCircleMesh);
+        group.add(lineplane2Mesh);
+        group.add(ellipseLeft);
+        group.add(ellipseRight);
+        group.add(keysrightPlane1Mesh);
+        group.add(keysleftPlane1Mesh);
+        group.add(ellipseLeftBig);
+        group.add(ellipseRightBig);
+        group.add(poleLcylinder);
+        group.add(poleRcylinder);
+        group.add(hoopLeftPlane1Mesh);
+        group.add(hoopRightPlane1Mesh);
+        //group.add(circlemesh);
+
+
+        //group.add(planeBorderMesh);
+
+        scene.add(group);
+
+        const lights = [];
+        lights[0] = new THREE.PointLight(0xffffff, 1, 0);
+        lights[1] = new THREE.PointLight(0xffffff, 1, 0);
+        lights[2] = new THREE.PointLight(0xffffff, 1, 0);
+
+        lights[0].position.set(0, 200, 0);
+        lights[1].position.set(100, 200, 100);
+        lights[2].position.set(- 100, - 200, - 100);
+
+        scene.add(lights[0]);
+        scene.add(lights[1]);
+        scene.add(lights[2]);
+
+
+        // a light
+        // var light = new THREE.HemisphereLight(0xfffff0, 0x101020, 1.25);
+        // light.position.set(0.75, 1, 0.25);
+        // scene.add(light);
+
+
+        //render
+        requestAnimationFrame(function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        })
+
+        function onButtonClick2(event) {
+            console.log(plane2Mesh.material.color);
+            plane2Mesh.material.color = new THREE.Color(0xff3333);
+            renderer.render(scene, camera);
+        }
+
+        function onButtonClick1(event) {
+            console.log(plane1Mesh.material.color);
+            plane1Mesh.material.color = new THREE.Color(0x156289);
+            renderer.render(scene, camera);
+        }
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        var messages = document.getElementById('messages');
+        var form = document.getElementById('form');
+        var input = document.getElementById('input');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (input.value) {
+                console.log('Logging value '+input.value);
+                socket.emit('chat message', input.value);
+                input.value = '';
+            }
+        });
+
+        socket.on('chat message', function (msg) {
+            var item = document.createElement('li');
+            item.textContent = msg;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    </script>
+    <button style="right:0; bottom:0;" id="changecolor1" class="ui">Change color of square1</button>
+    <button style="right:0; bottom:0;" id="changecolor2" class="ui">Change color of square2</button>
+    
+
+</body>
