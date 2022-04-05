@@ -58,22 +58,43 @@
         #messages>li:nth-child(odd) {
             background: #efefef;
         }
+        canvas {
+			display: block;
+			width: 1024px;
+			height: 800px;
+		}
+
+		#newWindow {
+			display: block;
+			position: absolute;
+			bottom: 0.3em;
+			left: 0.5em;
+			color: #fff;
+		}
     </style>
 
-    
-<script type="importmap">{
+
+    <script type="importmap">{
     "imports": {
         "three": "https://threejs.org/build/three.module.js", 
         "http": "https://github.com/nodejs/node/blob/v17.0.0/lib/http.js",
         "socket.io-client": "https://cdn.socket.io/4.4.1/socket.io.esm.min.js"
     }
 }</script>
-<script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://github.com/mrdoob/three.js/blob/master/examples/jsm/controls/DragControls.js"></script>
 </head>
 
 <body style='margin: 0px; background-color: #bbbbbb; overflow: hidden;'>
+    
     <script type="module" src="courtjs/socketComm.js"></script>
     <script type="module" src="courtjs/court3js.js"></script>
-  
+   
+    <div id="viewport">
+        <canvas id="artifactCanvas">
+        </canvas>
+    </div>
+
 </body>
+
 </html>
