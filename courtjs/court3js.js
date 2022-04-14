@@ -3,6 +3,31 @@ import { OrbitControls } from '/OrbitControls.js'
 import { GUI } from '/lil-gui.module.min.js';
 import { DragControls } from '/DragControls.js';
 
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+var uuidCookie = getCookie('uuidCookie');
+console.log(uuidCookie);
+
+var courtCacheCookie = getCookie('courtCacheCookie');
+console.log(courtCacheCookie);
+
+var allProperties = {};
+
+
 var socket = io();
 socket.on('propChanges', function (msg) {
     //console.log(msg);
@@ -14,6 +39,7 @@ socket.on('propChanges', function (msg) {
     } else
         meshobj.material.color = new THREE.Color(obj.value);
 });
+
 
 
 const renderControls = new function () {
@@ -100,32 +126,29 @@ const renderControls = new function () {
         teamLogoFolder.close()
 
         const textureBorderFolder = gui.addFolder('Center court Texture')
-        var team = { "Pick texture for Center court": '' }
-        gui.add(team, 'Pick texture for Center court', { 'Texture1': 'A', 'Texture2': 'B', 'Texture3': 'C' }).onChange(value => {
+        var centerCourt = { "Pick texture for Center court": '' }
+        gui.add(centerCourt, 'Pick texture for Center court', { 'Texture1': 'A', 'Texture2': 'B', 'Texture3': 'C' }).onChange(value => {
             plane1Mesh.material.color = null;
             if (value == 'A') {
-                plane1Mesh.material.map = new THREE.TextureLoader().load('woodtexture1.jpg')
-                plane2Mesh.material.map = new THREE.TextureLoader().load('woodtexture1.jpg')
+                plane1Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture1.jpg')
+                plane2Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture1.jpg')
                 //socket.emit('propChanges', {"meshName":"borderupPlane1Mesh", "value":"woodtexture1.jpg"});
             }
             if (value == 'B') {
-                plane1Mesh.material.map = new THREE.TextureLoader().load('woodtexture.jpg')
-                plane2Mesh.material.map = new THREE.TextureLoader().load('woodtexture.jpg')
+                plane1Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture2.jpg')
+                plane2Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture2.jpg')
                 //socket.emit('propChanges', {"meshName":"borderupPlane1Mesh", "value":"woodtexture2.jpg"});
             }
             if (value == 'C') {
-                plane1Mesh.material.map = new THREE.TextureLoader().load('woodtexture3.jpg')
-                plane2Mesh.material.map = new THREE.TextureLoader().load('woodtexture3.jpg')
+                plane1Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture3.jpg')
+                plane2Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture3.jpg')
                 //socket.emit('propChanges', {"meshName":"borderupPlane1Mesh", "value":"woodtexture3.jpg"});
             }
-            // borderupPlane1Mesh.material.color = new THREE.Color(value);
-            // borderbottomPlane1Mesh.material.color = new THREE.Color(value);
-            // borderleftPlane1Mesh.material.color = new THREE.Color(value);
-            // borderrightPlane1Mesh.material.color = new THREE.Color(value);
+
             renderer.render(scene, camera);
 
         });
-        teamLogoFolder.close()
+        textureBorderFolder.close();
 
     }
 }
@@ -154,7 +177,7 @@ const createCenterCourt = function () {
         //
         side: THREE.DoubleSide,
         depthWrite: true,
-        map: new THREE.TextureLoader().load('woodtexture3.jpg')
+        map: new THREE.TextureLoader().load('courtTexture/woodtexture1.jpg')
 
     });
     plane1Mesh = new THREE.Mesh(geometry1, material1);
@@ -165,7 +188,7 @@ const createCenterCourt = function () {
         //
         side: THREE.DoubleSide,
         depthWrite: true,
-        map: new THREE.TextureLoader().load('woodtexture3.jpg')
+        map: new THREE.TextureLoader().load('courtTexture/woodtexture1.jpg')
 
     });
     plane2Mesh = new THREE.Mesh(geometry2, material2);
@@ -178,6 +201,7 @@ const createCenterCourt = function () {
 
     group.add(plane1Mesh);
     group.add(plane2Mesh);
+    
 
 }
 
@@ -185,27 +209,33 @@ var createBorder = function () {
     var borderupGeometry = new THREE.PlaneGeometry(22, 1.2);
     var borderupMaterial = new THREE.MeshBasicMaterial({ color: 0x9b1c1c, side: THREE.DoubleSide });
     borderupPlane1Mesh = new THREE.Mesh(borderupGeometry, borderupMaterial);
+    borderupPlane1Mesh.name='borderupPlane1Mesh';
     borderupPlane1Mesh.position.set(5, 5.6, 0);
 
     var borderbottomGeometry = new THREE.PlaneGeometry(22, 1.2);
     var borderbottomMaterial = new THREE.MeshBasicMaterial({ color: 0x9b1c1c, side: THREE.DoubleSide });
     borderbottomPlane1Mesh = new THREE.Mesh(borderbottomGeometry, borderbottomMaterial);
+    borderbottomPlane1Mesh.name='borderbottomPlane1Mesh';
     borderbottomPlane1Mesh.position.set(5, -5.6, 0);
 
     var borderleftGeometry = new THREE.PlaneGeometry(1, 12);
     var borderleftMaterial = new THREE.MeshBasicMaterial({ color: 0x9b1c1c, side: THREE.DoubleSide });
     borderleftPlane1Mesh = new THREE.Mesh(borderleftGeometry, borderleftMaterial);
+    borderleftPlane1Mesh.name='borderleftPlane1Mesh';
     borderleftPlane1Mesh.position.set(-5.5, 0, 0);
 
     var borderrightGeometry = new THREE.PlaneGeometry(1, 12);
     var borderrightMaterial = new THREE.MeshBasicMaterial({ color: 0x9b1c1c, side: THREE.DoubleSide });
     borderrightPlane1Mesh = new THREE.Mesh(borderrightGeometry, borderrightMaterial);
+    borderrightPlane1Mesh.name='borderrightPlane1Mesh';
     borderrightPlane1Mesh.position.set(15.5, 0, 0);
 
     group.add(borderupPlane1Mesh);
     group.add(borderbottomPlane1Mesh);
     group.add(borderleftPlane1Mesh);
     group.add(borderrightPlane1Mesh);
+
+    
 
 }
 
@@ -363,37 +393,24 @@ var createKeys = function () {
     group.add(keysrightPlane1Mesh);
     group.add(keysleftPlane1Mesh);
 }
-// var colorObjects = [];
-// var createColorPallette = function(){
 
-//     var geometry = new THREE.PlaneGeometry(1, 1);
-// 	//var geometry = new THREE.SphereGeometry( 40, 40, 40 );
-
-// 	for (var i = 0; i < 10; i++) {
-// 		var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
-
-// 		object.position.x = -10+2;
-// 		object.position.y = -5;
-// 		object.position.z = 10;
-
-// 		//object.castShadow = true;
-
-// 		scene.add( object );
-
-// 		colorObjects.push( object );
-// 	}
+var  printAllObjects = function(){
+    scene.traverse( function( object ) {
+        if ( object.isMesh ) console.log( object );
+    } );
+}
 
 
-// }
 
 // init renderer
 var renderer = new THREE.WebGLRenderer({ canvas: artifactCanvas });
-//renderer.setSize(1024, 800);
+
 //document.getElementById('viewport').appendChild(renderer.domElement);
 
 let HEIGHT = window.innerHeight;
 let WIDTH = window.innerWidth;
-renderer.setSize(WIDTH, HEIGHT);
+renderer.setSize(WIDTH * 0.75, HEIGHT * 0.75);
+//renderer.setSize(1024, 800);
 
 // Create the scene
 var scene = new THREE.Scene();
@@ -420,25 +437,14 @@ camera.position.y = -180;
 
 
 var controls = new OrbitControls(camera, renderer.domElement);
-// var controls1 = new DragControls( colorObjects, camera, renderer.domElement );
-// controls1.addEventListener( 'dragstart', dragStartCallback );
-// controls1.addEventListener( 'dragend', dragendCallback );
-// var startColor;
+controls.enabled = true;
 
-// function dragStartCallback(event) {
-// 	startColor = event.object.material.color.getHex();
-// 	event.object.material.color.setHex(0x000000);
-// }
-
-// function dragendCallback(event) {
-// 	event.object.material.color.setHex(startColor);
-// }
 
 //create a group and all objects to the group
 //All meshes can now be rotated / scaled etc as a group
 const group = new THREE.Group();
-group.position.set(-7.5,-28.5,0);
-group.scale.set(1.75, 1.3, 1.5);
+group.position.set(-7.5, -28.5, 0);
+group.scale.set(2.0, 1.2, 1.5);
 scene.add(group);
 
 const lights = [];
@@ -455,7 +461,7 @@ scene.add(lights[1]);
 scene.add(lights[2]);
 
 // Load the background texture
-var backgroundTexture = new THREE.TextureLoader().load('background/Beach.jpg')
+var backgroundTexture = new THREE.TextureLoader().load('background/Beach.jpg ')
 var backgroundMesh = new THREE.Mesh(
     new THREE.PlaneGeometry(2, 2),
     new THREE.MeshBasicMaterial({
@@ -478,7 +484,7 @@ requestAnimationFrame(function animate() {
     renderer.clear();
     renderer.render(backgroundScene, backgroundCamera);
     renderer.render(scene, camera);
-    
+
     //document.getElementById('artifactCanvas').appendChild(renderer.domElement);
 })
 
@@ -491,7 +497,39 @@ function createCourtComponents() {
     createHoops();
     createKeys();
     createCenterCircle();
-    //createColorPallette();
+    printAllObjects();
 }
 
 createCourtComponents();
+
+
+
+const allCarouselImages = document.querySelectorAll('.carousel-item');
+allCarouselImages.forEach(function (carouselItem) {
+    const image = carouselItem.children[0];
+    //console.log(image);
+    image.onclick = changeBackground;
+});
+
+
+function changeBackground() {
+    //console.log("Changing to this image:::   "+this);
+    //console.log("Changint to this image:::   "+this.currentSrc);
+    let name = this.currentSrc;
+    let nameSplit = name.split("/");
+    let lastSplit = nameSplit[nameSplit.length - 1];
+    //console.log(lastSplit);
+    if (name.includes("carouselImages"))
+        backgroundMesh.material.map = new THREE.TextureLoader().load("carouselImages/" + lastSplit)
+    else {
+        //console.log("change to court")
+        plane1Mesh.material.map = new THREE.TextureLoader().load('courtTexture/' + lastSplit);
+        plane2Mesh.material.map = new THREE.TextureLoader().load('courtTexture/' + lastSplit);
+    }
+
+}
+
+
+
+export { backgroundMesh };
+

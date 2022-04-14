@@ -2,7 +2,13 @@
 <html>
 
 <head>
-    <title>Socket.IO chat</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css">
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <title>Basketball Court</title>
     <style>
         body {
             margin: 0;
@@ -58,40 +64,175 @@
         #messages>li:nth-child(odd) {
             background: #efefef;
         }
+
         canvas {
-			display: block;
-			width: 1024px;
-			height: 800px;
-		}
+            display: block;
+            width: 1024px;
+            height: 800px;
+        }
 
-		#newWindow {
-			display: block;
-			position: absolute;
-			bottom: 0.3em;
-			left: 0.5em;
-			color: #fff;
-		}
+        #newWindow {
+            display: block;
+            position: absolute;
+            bottom: 0.3em;
+            left: 0.5em;
+            color: #fff;
+        }
+
+        .container-slider{
+            height:500px;
+            width:500px;
+        }
+
     </style>
+     <script type="importmap">{
+        "imports": {
+            "three": "https://threejs.org/build/three.module.js", 
+            "http": "https://github.com/nodejs/node/blob/v17.0.0/lib/http.js",
+            "socket.io-client": "https://cdn.socket.io/4.4.1/socket.io.esm.min.js"
+           
+        }
+    }</script>
+    <script type="module" src="courtjs/court3js.js"></script>
+   
+    <script>
+       
+        const changeBackground = function (image) {
+            console.log("Changint to this image:::   " + image.src);
+            let name = image.attributes[2].value;
+            let nameSplit = name.split("/");
+            let lastSplit = nameSplit[nameSplit.length - 1];
+            console.log(lastSplit);
+            changeCourtBackground();
+            //backgroundMesh.map = new THREE.TextureLoader().load(lastSplit)
+        }
+    </script>
 
 
-    <script type="importmap">{
-    "imports": {
-        "three": "https://threejs.org/build/three.module.js", 
-        "http": "https://github.com/nodejs/node/blob/v17.0.0/lib/http.js",
-        "socket.io-client": "https://cdn.socket.io/4.4.1/socket.io.esm.min.js"
-    }
-}</script>
+   
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://github.com/mrdoob/three.js/blob/master/examples/jsm/controls/DragControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
 </head>
 
 <body style='margin: 0px; background-color: #bbbbbb; overflow: hidden;'>
-    
+
     <script type="module" src="courtjs/socketComm.js"></script>
-    <script type="module" src="courtjs/court3js.js"></script>
    
+
+    <div class="row">
+        <!--carousel 1-->
+        <div class="col-md-5 col-lg-5 d-none d-sm-block" >
+            <div class="container-slider">
+                <div class="divslider" style="background-color: black;">
+                    <div id="carouselExampleIndicators" data-interval="5000" class="carousel slide"
+                        data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img class="d-block w-100" src="carouselImages/1.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Select a background image</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="carouselImages/2.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Select a background image</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="carouselImages/3.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Select a background image</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="carouselImages/4.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Select a background image</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="carouselImages/5.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Select a background image</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
+                            data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Anterior</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
+                            data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Próximo</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--carousel 2-->
+        <div class="col-md-5 col-lg-5 d-none d-sm-block">
+            <div class="container-slider">
+                <div class="divslider" style="background-color: black;">
+                    <div id="carouselExampleIndicators2" data-interval="5000" class="carousel slide"
+                        data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#carouselExampleIndicators2" data-slide-to="0" class="active"></li>
+                            <li data-target="#carouselExampleIndicators2" data-slide-to="1"></li>
+                            <li data-target="#carouselExampleIndicators2" data-slide-to="2"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img class="d-block w-100" src="courtTexture/woodtexture1.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Select a court texture</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="courtTexture/woodtexture2.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Select a court texture</h5>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="courtTexture/woodtexture3.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Select a court texture</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators2" role="button"
+                            data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Anterior</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators2" role="button"
+                            data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Próximo</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
     <div id="viewport">
-        <canvas id="artifactCanvas">
+        <canvas id="artifactCanvas" style="width: 1024px; height: 800px; touch-action: none; cursor: auto;">
         </canvas>
     </div>
 
