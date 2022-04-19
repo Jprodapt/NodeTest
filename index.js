@@ -40,6 +40,10 @@ app.get('/basketball', (req, res) => {
  
 });
 
+app.get('/drag', (req, res) => {
+  res.sendFile(__dirname + '/DragFile.html');
+});
+
 // View engine setup
 app.set('view engine', 'ejs');
  
