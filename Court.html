@@ -84,6 +84,7 @@
             /* height:100%; */
             width: 100%;
         }
+
         .image-upload>input {
             display: none;
         }
@@ -102,6 +103,19 @@
         [aria-labelledby~=lil-gui-name] {
             display: none;
         }
+
+        .modal-header,
+        h4,
+        .close {
+            background-color: #5cb85c;
+            color: white !important;
+            text-align: center;
+            font-size: 30px;
+        }
+
+        .modal-footer {
+            background-color: #f9f9f9;
+        }
     </style>
     <script type="importmap">{
         "imports": {
@@ -117,23 +131,18 @@
     <!-- <script type="module" src="courtjs/THREE.MeshLine.js"></script>  -->
 
     <script>
+        $(document).ready(function () {
+            $("#myBtn").click(function () {
+                $("#myModal").modal();
+            });
+        });
 
-        const changeBackground = function (image) {
-            console.log("Changint to this image:::   " + image.src);
-            let name = image.attributes[2].value;
-            let nameSplit = name.split("/");
-            let lastSplit = nameSplit[nameSplit.length - 1];
-            console.log(lastSplit);
-            changeCourtBackground();
-            //backgroundMesh.map = new THREE.TextureLoader().load(lastSplit)
-        }
     </script>
 
 
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="courtjs/imageUpload.js"></script>
-    <script src="https://github.com/mrdoob/three.js/blob/master/examples/jsm/controls/DragControls.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
 
 </head>
@@ -152,7 +161,38 @@
             object-fit: cover;
         }
     </style>
+
     <div class="main-container" style="position: relative;height: 500px;">
+
+       
+        <!-- email modal  container-->
+        
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+
+                    <div class="modal-body" style="padding:40px 50px;">
+                        <form role="form">
+                            <div class="form-group">
+                                <label for="usrname"><span class="glyphicon glyphicon-user"></span> Enter email id(s).
+                                    (Comma seperated for multiple)</label>
+                                <input type="text" class="form-control" id="usrname" placeholder="Enter email">
+                            </div>
+
+                            <button type="submit" class="btn btn-success btn-block"><span
+                                    class="glyphicon glyphicon-off"></span> Login</button>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
         <div class="carousel-container">
             <div class="d-none d-sm-block" id="holder"
                 style="width: 300px;left: 10px;top: 10px;position: absolute;border: 2px solid white;border-radius: 5px;overflow: hidden;box-shadow: 2px 2px 9px grey;">
@@ -216,12 +256,12 @@
                     <label for="file-input">
                         <img src="uploadImage.jpg" style="width:50px" />
                     </label>
-                    
+
                     <input id="file-input" type="file" />
-                    
+
                 </div>
             </div>
-           
+
             <div class="d-none d-sm-block" id="holderCourt"
                 style="width: 300px;position: absolute;left: 320px;top: 10px;border: 2px solid white;border-radius: 5px;overflow: hidden;box-shadow: 2px 2px 9px grey;">
                 <div class="container-slider textureContainer">
@@ -276,17 +316,31 @@
                     <label for="file-input-courtTexture">
                         <img src="uploadImage.jpg" style="width:50px" />
                     </label>
-    
+
                     <input id="file-input-courtTexture" type="file" />
                 </div>
             </div>
+            <div class="container">
+                <!-- Trigger the modal with a button -->
+                <button type="button" class="btn btn-default btn-lg" id="myBtn">Login</button>
+            </div>
+            
         </div>
-       
+        
+
         <div id="viewport">
             <canvas id="artifactCanvas" style="width: 100%; height: 800px; touch-action: none; cursor: auto;">
             </canvas>
         </div>
+
+        <form id="form" action="">
+            <input id="input" autocomplete="off" /><button>Send</button>
+        </form>
+        <ul id="messages"></ul>
+
     </div>
+
+
 
 
 

@@ -30,14 +30,15 @@ app.get('/basketball', (req, res) => {
     var uuid = uuidv4();
     console.log(uuid);
     res.cookie('uuidCookie', uuid);
-    courtCache.set(uuid, {'test':'attr1'}, 60000 );
+    var courtAttributes = courtCache.get(uuid);
+    res.cookie('courtCacheCookie', courtAttributes);
   }else{
     res.cookie('uuidCookie', id['id']);
     var courtAttributes = courtCache.get(id['id']);
     res.cookie('courtCacheCookie', courtAttributes);
   }
   res.sendFile(__dirname + '/Court.html');
- 
+  broadcastSocketIo(uuid);
 });
 
 app.get('/drag', (req, res) => {
@@ -55,7 +56,7 @@ app.get('/user', function(req, res){
 })
 
 app.get('/basketball1', (req, res) => {
-  res.sendFile(__dirname + '/CourtSingleFile.html');
+  res.sendFile(__dirname + '/CourtMobile.html');
 });
 
 app.get('/carousel', (req, res) => {
@@ -74,6 +75,25 @@ io.on('connection', (socket) => {
     io.emit('propChanges', JSON.stringify(msg));
   });
 });
+
+function broadcastSocketIo (uuid){
+  console.log('a user connected broadcastSocketIo called ')
+  io.on('connection', (socket) => {
+    console.log('a user connected')
+    socket.on(uuid, (msg) => {
+      //console.log(msg);
+      //courtCache.set(uuid,msg);
+      //console.log("court cache updated to  :: "+courtCache.get(uuid));
+      io.emit(uuid, msg);
+    });
+    // socket.on(uuid+"chat", (msg) => {
+    //   console.log('chat message '+msg);
+    //   //courtCache.set(uuid,msg);
+    //   //console.log("court cache updated to  :: "+courtCache.get(uuid));
+    //   io.emit(uuid+"chat", msg);
+    // });
+  });
+}
 
 server.listen(3000, () => {
   console.log('listening on *:3000');

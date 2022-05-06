@@ -4,12 +4,8 @@ import * as THREE from 'three';
 import {
     OrbitControls
 } from '/OrbitControls.js'
-import {
-    GUI
-} from '/lil-gui.module.min.js';
-import {
-    DragControls
-} from '/DragControls.js';
+
+
 
 
 
@@ -30,10 +26,9 @@ function getCookie(cname) {
 }
 
 var uuidCookie = getCookie('uuidCookie');
-console.log(uuidCookie);
 
 var courtCacheCookie = getCookie('courtCacheCookie');
-console.log("court cache cookie values "+courtCacheCookie);
+
 
 var allProperties = {};
 
@@ -113,132 +108,6 @@ function socketEmitCommon(){
 
 
 
-const renderControls = new function () {
-    const gui = new GUI();
-    this.addControls = function () {
-        var obj = {
-            //"Left half color": '#00ff00',
-            "Court color": '#00ff00',
-            //"Right half color": '#156289',
-            "Border color": '#ffffff',
-            "Keys color": "#f53259",
-            "Line color": "#ff0000",
-        }
-
-        // gui.addColor(obj, 'Left half color').onChange(value => {
-        //     plane1Mesh.material.color = new THREE.Color(value);
-        //     renderer.render(scene, camera);
-        //     socketEmitCommon();
-        // });;
-
-        // gui.addColor(obj, 'Right half color').onChange(value => {
-        //     plane2Mesh.material.color = new THREE.Color(value);
-        //     renderer.render(scene, camera);
-        //     socket.emit(uuidCookie, {
-        //         "meshName": "plane2Mesh",
-        //         "value": value
-        //     });
-        // });;
-
-        gui.addColor(obj, 'Court color').onChange(value => {
-            plane1Mesh.material.color = new THREE.Color(value);
-            plane2Mesh.material.color = new THREE.Color(value);
-            renderer.render(scene, camera);
-            socketEmitCommon();
-        });;
-
-        gui.addColor(obj, 'Border color').onChange(value => {
-            borderupPlane1Mesh.material.color = new THREE.Color(value);
-            borderbottomPlane1Mesh.material.color = new THREE.Color(value);
-            borderleftPlane1Mesh.material.color = new THREE.Color(value);
-            borderrightPlane1Mesh.material.color = new THREE.Color(value);
-            renderer.render(scene, camera);
-            socketEmitCommon();
-
-        });;
-        gui.addColor(obj, 'Keys color').onChange(value => {
-            keysrightPlane1Mesh.material.color = new THREE.Color(value);
-            keysleftPlane1Mesh.material.color = new THREE.Color(value);
-            renderer.render(scene, camera);
-            socketEmitCommon();
-        });;
-        gui.addColor(obj, 'Line color').onChange(value => {
-            ellipseRight.material.color = new THREE.Color(value);
-            ellipseLeft.material.color = new THREE.Color(value);
-            ellipseLeftBig.material.color = new THREE.Color(value);
-            ellipseRightBig.material.color = new THREE.Color(value);
-            renderer.render(scene, camera);
-            socketEmitCommon();
-
-        });;
-        const teamLogoFolder = gui.addFolder('Team Logo')
-        var team = {
-            "Pick a team": ''
-        }
-        gui.add(team, 'Pick a team', {
-            'Boston': 'A',
-            'Golden State': 'B',
-            'Detroit': 'C'
-        }).onChange(value => {
-            if (value == 'A') {
-                centerCircleMesh.material.map = new THREE.TextureLoader().load('boston.png')
-                socket.emit('propChanges', {
-                    "meshName": "centerCircleMesh",
-                    "value": "boston.png"
-                });
-            }
-            if (value == 'B') {
-                centerCircleMesh.material.map = new THREE.TextureLoader().load('warriors.png')
-                socket.emit('propChanges', {
-                    "meshName": "centerCircleMesh",
-                    "value": "warriors.png"
-                });
-            }
-            if (value == 'C') {
-                centerCircleMesh.material.map = new THREE.TextureLoader().load('detroit.png')
-                socket.emit('propChanges', {
-                    "meshName": "centerCircleMesh",
-                    "value": "detroit.png"
-                });
-            }
-
-
-        });
-        teamLogoFolder.close()
-
-        const textureBorderFolder = gui.addFolder('Center court Texture')
-        var centerCourt = {
-            "Pick texture for Center court": ''
-        }
-        gui.add(centerCourt, 'Pick texture for Center court', {
-            'Texture1': 'A',
-            'Texture2': 'B',
-            'Texture3': 'C'
-        }).onChange(value => {
-            plane1Mesh.material.color = null;
-            if (value == 'A') {
-                plane1Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture1.jpg')
-                plane2Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture1.jpg')
-                //socket.emit('propChanges', {"meshName":"borderupPlane1Mesh", "value":"woodtexture1.jpg"});
-            }
-            if (value == 'B') {
-                plane1Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture2.jpg')
-                plane2Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture2.jpg')
-                //socket.emit('propChanges', {"meshName":"borderupPlane1Mesh", "value":"woodtexture2.jpg"});
-            }
-            if (value == 'C') {
-                plane1Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture3.jpg')
-                plane2Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture3.jpg')
-                //socket.emit('propChanges', {"meshName":"borderupPlane1Mesh", "value":"woodtexture3.jpg"});
-            }
-
-            renderer.render(scene, camera);
-
-        });
-        textureBorderFolder.close();
-
-    }
-}
 
 
 
@@ -610,37 +479,37 @@ scene.add(lights[0]);
 scene.add(lights[1]);
 scene.add(lights[2]);
 
-// Load the background texture
-var backgroundTexture = new THREE.TextureLoader().load('background/Indoor.jpg')
-backgroundTexture.name='background/Indoor.jpg';
-var backgroundMesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(2, 2),
-    new THREE.MeshBasicMaterial({
-        map: backgroundTexture
-    }));
-backgroundMesh.name='backgroundMesh';
-backgroundMesh.material.depthTest = false;
-backgroundMesh.material.depthWrite = false;
+// // Load the background texture
+// var backgroundTexture = new THREE.TextureLoader().load('background/Indoor.jpg')
+// backgroundTexture.name='background/Indoor.jpg';
+// var backgroundMesh = new THREE.Mesh(
+//     new THREE.PlaneGeometry(2, 2),
+//     new THREE.MeshBasicMaterial({
+//         map: backgroundTexture
+//     }));
+// backgroundMesh.name='backgroundMesh';
+// backgroundMesh.material.depthTest = false;
+// backgroundMesh.material.depthWrite = false;
 
-// Create your background scene
-var backgroundScene = new THREE.Scene();
-var backgroundCamera = new THREE.Camera();
-backgroundScene.add(backgroundCamera);
-backgroundScene.add(backgroundMesh);
+// // Create your background scene
+// var backgroundScene = new THREE.Scene();
+// var backgroundCamera = new THREE.Camera();
+// backgroundScene.add(backgroundCamera);
+// backgroundScene.add(backgroundMesh);
 
 //render
 requestAnimationFrame(function animate() {
     requestAnimationFrame(animate);
     renderer.autoClear = false;
     renderer.clear();
-    renderer.render(backgroundScene, backgroundCamera);
+    //renderer.render(backgroundScene, backgroundCamera);
     renderer.render(scene, camera);
 
     //document.getElementById('artifactCanvas').appendChild(renderer.domElement);
 })
 
 function createCourtComponents() {
-    renderControls.addControls();
+    //renderControls.addControls();
     createCenterCourt();
     createBorder();
     createAllLines();
@@ -648,175 +517,9 @@ function createCourtComponents() {
     createHoops();
     createKeys();
     createCenterCircle();
-    printAllObjects();
-    setupDragDropForBackground();
-    setupDragDropForCourt();
+ 
 }
 
 createCourtComponents();
 
 
-
-const allCarouselImages = document.querySelectorAll('.carousel-item');
-allCarouselImages.forEach(function (carouselItem) {
-    const image = carouselItem.children[0];
-    //console.log(image);
-    image.onclick = changeBackground;
-});
-
-
-function changeBackground() {
-    //console.log("Changing to this image:::   "+this);
-    //console.log("Changint to this image:::   "+this.currentSrc);
-    let name = this.currentSrc;
-    let nameSplit = name.split("/");
-    let lastSplit = nameSplit[nameSplit.length - 1];
-    //console.log(lastSplit);
-    if (name.includes("carouselImages")){
-        var texture1 = new THREE.TextureLoader().load("carouselImages/" + lastSplit);
-        texture1.name ="carouselImages/" + lastSplit;
-        backgroundMesh.material.map = texture1;
-        socketEmitCommon();
-    }
-    else {
-        //console.log("change to court")
-        var texture1 = new THREE.TextureLoader().load("courtTexture/" + lastSplit);
-        texture1.name ="courtTexture/" + lastSplit;
-        plane1Mesh.material.map = texture1;
-        plane2Mesh.material.map = texture1;
-        socketEmitCommon();
-    }
-
-}
-
-const image_input = document.querySelector("#file-input");
-
-image_input.addEventListener("change", function () {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-        const uploaded_image = reader.result;
-
-        backgroundMesh.material.map = new THREE.TextureLoader().load(uploaded_image);
-        //document.querySelector("#display-image").style.backgroundImage = `url(${uploaded_image})`;
-    });
-    reader.readAsDataURL(this.files[0]);
-});
-
-const image_input_court = document.querySelector("#file-input-courtTexture");
-
-image_input_court.addEventListener("change", function () {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => {
-        const uploaded_image = reader.result;
-        plane1Mesh.material.map = new THREE.TextureLoader().load(uploaded_image);
-        plane2Mesh.material.map = new THREE.TextureLoader().load(uploaded_image);
-    });
-    reader.readAsDataURL(this.files[0]);
-});
-
-function setupDragDropForBackground() {
-    var holder = document.getElementById('holder');
-    // check if filereader is available
-    if (typeof window.FileReader === 'undefined') {
-        console.error("Filereader not supported");
-    }
-
-    holder.ondragover = function () {
-        this.className = 'hover';
-        return false;
-    };
-    holder.ondragend = function () {
-        this.className = '';
-        return false;
-    };
-
-    holder.ondrop = function (e) {
-        this.className = '';
-        e.preventDefault();
-
-        var file = e.dataTransfer.files[0],
-                reader = new FileReader();
-        reader.onload = function (event) {
-            console.log(event.target);
-            console.log(event);
-            //holder.style.background = 'url(' + event.target.result + ') no-repeat center';
-
-            var image = document.createElement('img');
-            image.src = event.target.result;
-            var texture = new THREE.Texture(image);
-            texture.needsUpdate = true;
-            console.log('Image src :;;  '+image.src);
-            texture.name =image.src;
-            backgroundMesh.material.map = texture;
-            socketEmitCommon();
-        };
-        reader.readAsDataURL(file);
-
-        return false;
-    }
-
-}
-
-function setupDragDropForCourt() {
-    var holder = document.getElementById('holderCourt');
-    // check if filereader is available
-    if (typeof window.FileReader === 'undefined') {
-        console.error("Filereader not supported");
-    }
-
-    holder.ondragover = function () {
-        this.className = 'hover';
-        return false;
-    };
-    holder.ondragend = function () {
-        this.className = '';
-        return false;
-    };
-
-    holder.ondrop = function (e) {
-        this.className = '';
-        e.preventDefault();
-
-        var file = e.dataTransfer.files[0],
-                reader = new FileReader();
-        reader.onload = function (event) {
-            console.log(event.target);
-            console.log(event);
-            //holder.style.background = 'url(' + event.target.result + ') no-repeat center';
-
-            var image = document.createElement('img');
-            image.src = event.target.result;
-            var texture = new THREE.Texture(image);
-            texture.needsUpdate = true;
-            console.log('Image src :;;  '+image.src);
-            texture.name =image.src;
-            plane1Mesh.material.map  = texture;
-            plane2Mesh.material.map  = texture;
-            socketEmitCommon();
-        };
-        reader.readAsDataURL(file);
-
-        return false;
-    }
-
-}
-
-//CHAT code
-var messages = document.getElementById('messages');
-var form = document.getElementById('form');
-var input = document.getElementById('input');
-
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
-  if (input.value) {
-    socket.emit(uuidCookie, input.value);
-    input.value = '';
-  }
-});
-
-// socket.on(uuidCookie+'chat', function(msg) {
-//   var item = document.createElement('li');
-//   item.textContent = msg;
-//   messages.appendChild(item);
-//   window.scrollTo(0, document.body.scrollHeight);
-// });
