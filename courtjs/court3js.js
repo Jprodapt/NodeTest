@@ -1,15 +1,9 @@
-import * as THREE from 'three';
-
-
-import {
-    OrbitControls
-} from '/OrbitControls.js'
+import * as THREE from '../three.module.js';
+import { OrbitControls } from '../OrbitControls1.js';
 import {
     GUI
-} from '/lil-gui.module.min.js';
-import {
-    DragControls
-} from '/DragControls.js';
+} from '../lil-gui.module.min.js';
+
 
 
 
