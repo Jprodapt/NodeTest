@@ -131,11 +131,79 @@
     <!-- <script type="module" src="courtjs/THREE.MeshLine.js"></script>  -->
 
     <script>
+        function ValidateEmail(mail) {
+          
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+                return (true)
+            }
+            alert("You have entered an invalid email address!")
+            return (false)
+        }
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        sendEmail = async (data) => {
+            const location = window.location.hostname;
+            const port = window.location.port;
+          
+            const settings = {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    emailId: data,
+                    url: `http://${location}:${port}/basketball?id=` + getCookie('uuidCookie')
+                })
+            };
+            try {
+                
+                const fetchResponse = await fetch(`http://${location}:${port}/api/sendEmail`, settings);
+                const data = await fetchResponse;
+                return data;
+            } catch (e) {
+                
+                return e;
+            }
+        }
+
         $(document).ready(function () {
+            $("#emailIdsButton").click(function () {
+                
+                if (document.getElementById("emailIds").value) {
+                    const emailIdText = document.getElementById("emailIds").value;
+                    emailIds = emailIdText.split(';');
+                    
+                    emailIds.forEach(emailId => {
+                        if (ValidateEmail(emailId.trim())) {
+                            
+                            sendEmail(emailId);
+                        }
+                    });
+                }
+                $('#myModal').modal('hide');
+            });
             $("#myBtn").click(function () {
-                $("#myModal").modal();
+                $("#myModal").modal('show');
             });
         });
+
+
 
     </script>
 
@@ -164,9 +232,9 @@
 
     <div class="main-container" style="position: relative;height: 500px;">
 
-       
+
         <!-- email modal  container-->
-        
+
 
         <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">
@@ -180,11 +248,11 @@
                             <div class="form-group">
                                 <label for="usrname"><span class="glyphicon glyphicon-user"></span> Enter email id(s).
                                     (Comma seperated for multiple)</label>
-                                <input type="text" class="form-control" id="usrname" placeholder="Enter email">
+                                <input type="text" class="form-control" id="emailIds" placeholder="Enter email">
                             </div>
 
-                            <button type="submit" class="btn btn-success btn-block"><span
-                                    class="glyphicon glyphicon-off"></span> Login</button>
+                            <button type="button" id="emailIdsButton" class="btn btn-success btn-block"><span
+                                    class="glyphicon glyphicon-off"></span> Send email</button>
                         </form>
                     </div>
 
@@ -211,31 +279,31 @@
                                 <div class="carousel-item active">
                                     <img class="d-block w-100" src="carouselImages/1.jpg" width="100" height="100">
                                     <div class="carousel-caption d-none d-md-block">
-                                        <h5>Select a background image/Drag and drop one from your desktop</h5>
+                                        <p>Select a background image/Drag and drop one from your desktop</p>
                                     </div>
                                 </div>
                                 <div class="carousel-item">
                                     <img class="d-block w-100" src="carouselImages/2.jpg" width="100" height="100">
                                     <div class="carousel-caption d-none d-md-block">
-                                        <h5>Select a background image/Drag and drop one from your desktop</h5>
+                                        <p>Select a background image/Drag and drop one from your desktop</p>
                                     </div>
                                 </div>
                                 <div class="carousel-item">
                                     <img class="d-block w-100" src="carouselImages/3.jpg" width="100" height="100">
                                     <div class="carousel-caption d-none d-md-block">
-                                        <h5>Select a background image/Drag and drop one from your desktop</h5>
+                                        <p>Select a background image/Drag and drop one from your desktop</p>
                                     </div>
                                 </div>
                                 <div class="carousel-item">
                                     <img class="d-block w-100" src="carouselImages/4.jpg" width="100" height="100">
                                     <div class="carousel-caption d-none d-md-block">
-                                        <h5>Select a background image/Drag and drop one from your desktop</h5>
+                                        <p>Select a background image/Drag and drop one from your desktop</p>
                                     </div>
                                 </div>
                                 <div class="carousel-item">
                                     <img class="d-block w-100" src="carouselImages/5.jpg" width="100" height="100">
                                     <div class="carousel-caption d-none d-md-block">
-                                        <h5>Select a background image/Drag and drop one from your desktop</h5>
+                                        <p>Select a background image/Drag and drop one from your desktop</p>
                                     </div>
                                 </div>
                             </div>
@@ -277,25 +345,25 @@
                                 <div class="carousel-item active">
                                     <img class="d-block w-100" src="courtTexture/woodtexture1.jpg">
                                     <div class="carousel-caption d-none d-md-block">
-                                        <h5>Select a court texture/Drag and drop one from your desktop</h5>
+                                        <p>Select a court texture/Drag and drop one from your desktop</p>
                                     </div>
                                 </div>
                                 <div class="carousel-item">
                                     <img class="d-block w-100" src="courtTexture/woodtexture2.jpg">
                                     <div class="carousel-caption d-none d-md-block">
-                                        <h5>Select a court texture/Drag and drop one from your desktop</h5>
+                                        <p>Select a court texture/Drag and drop one from your desktop</p>
                                     </div>
                                 </div>
                                 <div class="carousel-item">
                                     <img class="d-block w-100" src="courtTexture/woodtexture3.jpg">
                                     <div class="carousel-caption d-none d-md-block">
-                                        <h5>Select a court texture/Drag and drop one from your desktop</h5>
+                                        <p>Select a court texture/Drag and drop one from your desktop</p>
                                     </div>
                                 </div>
                                 <div class="carousel-item">
                                     <img class="d-block w-100" src="courtTexture/woodtexture4.jpg">
                                     <div class="carousel-caption d-none d-md-block">
-                                        <h5>Select a court texture/Drag and drop one from your desktop</h5>
+                                        <p>Select a court texture/Drag and drop one from your desktop</p>
                                     </div>
                                 </div>
                             </div>
@@ -320,23 +388,24 @@
                     <input id="file-input-courtTexture" type="file" />
                 </div>
             </div>
-            <div class="container">
-                <!-- Trigger the modal with a button -->
-                <button type="button" class="btn btn-default btn-lg" id="myBtn">Login</button>
-            </div>
-            
+
+
         </div>
-        
+
+        <div class="chat-frame" style="position: absolute;top:30px;left:55%;cursor: pointer;">
+            <img src="chat.png" width="120" alt="chat icon" id="myBtn">
+        </div>
+
 
         <div id="viewport">
             <canvas id="artifactCanvas" style="width: 100%; height: 800px; touch-action: none; cursor: auto;">
             </canvas>
         </div>
-
+<!-- 
         <form id="form" action="">
             <input id="input" autocomplete="off" /><button>Send</button>
         </form>
-        <ul id="messages"></ul>
+        <ul id="messages"></ul> -->
 
     </div>
 

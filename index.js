@@ -9,6 +9,9 @@ const url = require('url');
 const NodeCache = require('node-cache')
 const courtCache = new NodeCache();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 const { v4: uuidv4 } = require('uuid');
 
@@ -25,14 +28,14 @@ app.get('/ball', (req, res) => {
 app.get('/basketball', (req, res) => {
   var url_parts = url.parse(req.url, true);
   var id = url_parts.query;
-  console.log("uui from the client "+id['id']);
-  if(!id['id']){
+  console.log("uui from the client " + id['id']);
+  if (!id['id']) {
     var uuid = uuidv4();
     console.log(uuid);
     res.cookie('uuidCookie', uuid);
     var courtAttributes = courtCache.get(uuid);
     res.cookie('courtCacheCookie', courtAttributes);
-  }else{
+  } else {
     res.cookie('uuidCookie', id['id']);
     var courtAttributes = courtCache.get(id['id']);
     res.cookie('courtCacheCookie', courtAttributes);
@@ -45,15 +48,7 @@ app.get('/drag', (req, res) => {
   res.sendFile(__dirname + '/DragFile.html');
 });
 
-// View engine setup
-app.set('view engine', 'ejs');
- 
-// Without middleware
-app.get('/user', function(req, res){
- 
-    // Rendering home.ejs page
-    res.render('home', { name: 'Tobi' });
-})
+
 
 app.get('/basketball1', (req, res) => {
   res.sendFile(__dirname + '/CourtMobile.html');
@@ -67,6 +62,19 @@ app.get('/hello', (req, res) => {
   res.send('<h1>Hello world</h1>');
 });
 
+app.post('/api/sendEmail', (req, res) => {
+  console.log("inside  send email " + req.body.emailId);
+  console.log("inside  send email " + req.body.url);
+  var mailOptions = {
+    from: 'basketballbuild@donotreplyatt.com',
+    to:  req.body.emailId,
+    subject: 'Sending Email using Node.js',
+    text: 'Here is the URL to join your dream court '+req.body.url
+  };
+  sendEmail(mailOptions);
+  res.sendStatus(200);
+});
+
 
 io.on('connection', (socket) => {
   //console.log('a user connected')
@@ -76,7 +84,7 @@ io.on('connection', (socket) => {
   });
 });
 
-function broadcastSocketIo (uuid){
+function broadcastSocketIo(uuid) {
   console.log('a user connected broadcastSocketIo called ')
   io.on('connection', (socket) => {
     console.log('a user connected')
@@ -98,3 +106,30 @@ function broadcastSocketIo (uuid){
 server.listen(3000, () => {
   console.log('listening on *:3000');
 });
+
+
+var nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'basketballbuild@gmail.com',
+    pass: '!Prodapt1'
+  }
+});
+
+var mailOptions = {
+  from: 'basketballbuild@donotreplyatt.com',
+  to: 'jaisimha.seelam@prodapt.com',
+  subject: 'Sending Email using Node.js',
+  text: 'That was easy!'
+};
+function sendEmail(mailOptions) {
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+}

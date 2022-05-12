@@ -1,4 +1,4 @@
-import * as THREE from 'https://unpkg.com/three@0.120.1/build/three.module.js';
+import * as THREE from '../three.module.js';
 import { OrbitControls } from '../OrbitControls1.js';
 
 function getCookie(cname) {

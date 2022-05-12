@@ -796,17 +796,17 @@ function setupDragDropForCourt() {
 }
 
 //CHAT code
-var messages = document.getElementById('messages');
-var form = document.getElementById('form');
-var input = document.getElementById('input');
+// var messages = document.getElementById('messages');
+// var form = document.getElementById('form');
+// var input = document.getElementById('input');
 
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
-  if (input.value) {
-    socket.emit(uuidCookie, input.value);
-    input.value = '';
-  }
-});
+// form.addEventListener('submit', function(e) {
+//   e.preventDefault();
+//   if (input.value) {
+//     socket.emit(uuidCookie, input.value);
+//     input.value = '';
+//   }
+// });
 
 // socket.on(uuidCookie+'chat', function(msg) {
 //   var item = document.createElement('li');
