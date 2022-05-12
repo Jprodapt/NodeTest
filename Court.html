@@ -203,6 +203,13 @@
             });
         });
 
+        $(document).ready(function () {
+            $('input[aria-labelledby]').each(function(index,element){
+                if(element.type=='text'){
+                    element.style.display = 'none';                }
+            });
+        })
+
 
 
     </script>
