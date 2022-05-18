@@ -605,8 +605,8 @@ scene.add(lights[1]);
 scene.add(lights[2]);
 
 // Load the background texture
-var backgroundTexture = new THREE.TextureLoader().load('background/Indoor.jpg')
-backgroundTexture.name='background/Indoor.jpg';
+var backgroundTexture = new THREE.TextureLoader().load('carouselImages/1.jpg')
+backgroundTexture.name='carouselImages/1.jpg';
 var backgroundMesh = new THREE.Mesh(
     new THREE.PlaneGeometry(2, 2),
     new THREE.MeshBasicMaterial({
