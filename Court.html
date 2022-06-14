@@ -8,6 +8,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <title>Basketball Court</title>
     <style>
         body {
@@ -132,7 +136,7 @@
 
     <script>
         function ValidateEmail(mail) {
-          
+
             if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
                 return (true)
             }
@@ -159,7 +163,7 @@
         sendEmail = async (data) => {
             const location = window.location.hostname;
             const port = window.location.port;
-          
+
             const settings = {
                 method: 'POST',
                 headers: {
@@ -172,26 +176,26 @@
                 })
             };
             try {
-                
+
                 const fetchResponse = await fetch(`http://${location}:${port}/api/sendEmail`, settings);
                 const data = await fetchResponse;
                 return data;
             } catch (e) {
-                
+
                 return e;
             }
         }
 
         $(document).ready(function () {
             $("#emailIdsButton").click(function () {
-                
+
                 if (document.getElementById("emailIds").value) {
                     const emailIdText = document.getElementById("emailIds").value;
                     emailIds = emailIdText.split(';');
-                    
+
                     emailIds.forEach(emailId => {
                         if (ValidateEmail(emailId.trim())) {
-                            
+
                             sendEmail(emailId);
                         }
                     });
@@ -204,9 +208,10 @@
         });
 
         $(document).ready(function () {
-            $('input[aria-labelledby]').each(function(index,element){
-                if(element.type=='text'){
-                    element.style.display = 'none';                }
+            $('input[aria-labelledby]').each(function (index, element) {
+                if (element.type == 'text') {
+                    element.style.display = 'none';
+                }
             });
         })
 
@@ -265,6 +270,38 @@
 
                 </div>
 
+            </div>
+        </div>
+
+        
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                    <!-- Add image inside the body of modal -->
+                    <div class="modal-body">
+                        <span>Few helpful gestures and tips to build your dream court </span>
+                        <img id="image" src="instructions.jfif" width="100%" height="200px"
+                            alt="Click on button" />
+                        <ul>
+                            <li>You can upload images for the background and the court floor</li>
+                            <li>You can drag and drop images to change the background </li>
+                            <li>Click pics on your phone change use the upload icon next to the info icon to upload</li>
+                            <li>Use the controls on the right to change colors of your court</li>
+                        </ul>
+                        
+                    </div>
+
+                    <div >
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -346,13 +383,15 @@
                     </div>
                 </div>
                 <div class="image-upload">
+                    <img src="infoIcon.jpg" data-toggle="modal" data-target="#exampleModal" width="60px">
                     <label for="file-input">
                         <img src="uploadImage.jpg" style="width:50px" />
                     </label>
 
                     <input id="file-input" type="file" />
-
+                    
                 </div>
+                
             </div>
 
             <div class="d-none d-sm-block" id="holderCourt"
@@ -417,22 +456,23 @@
 
         </div>
 
-        <div class="chat-frame" style="position: absolute;top:30px;left:55%;cursor: pointer;">
+        <div class="chat-frame" style="position: absolute;top:30px;left:45%;cursor: pointer;">
             <img src="chat.png" width="120" alt="chat icon" id="myBtn">
         </div>
-
-
+        
         <div id="viewport">
             <canvas id="artifactCanvas" style="width: 100%; height: 800px; touch-action: none; cursor: auto;">
             </canvas>
         </div>
-<!-- 
+        
+        <!-- 
         <form id="form" action="">
             <input id="input" autocomplete="off" /><button>Send</button>
         </form>
         <ul id="messages"></ul> -->
 
     </div>
+
 
 
 
