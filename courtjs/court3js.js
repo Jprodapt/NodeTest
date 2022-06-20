@@ -36,7 +36,7 @@ var socket = io();
 socket.on(uuidCookie, function (msg) {
     //console.log(msg);
     const obj = msg;
-    //If its a chat message do the below 
+    //If its a chat message do the below
     if(!Array.isArray(obj)){
         var item = document.createElement('li');
         item.textContent = msg;
@@ -48,7 +48,7 @@ socket.on(uuidCookie, function (msg) {
     //console.log(eval(obj.meshName));
     var meshobj = eval(obj[0].meshName);
     obj.forEach(object1 => {
-        //Have a different logic for back ground mesh. Cos its not part of the actual scene 
+        //Have a different logic for back ground mesh. Cos its not part of the actual scene
         if(object1.meshName){
             meshobj = eval(object1.meshName);
             if(object1.meshObject.textures){
@@ -62,7 +62,7 @@ socket.on(uuidCookie, function (msg) {
                 meshobj.material.color = new THREE.Color(object1.meshObject.materials[0].color);
             }
         }
-        
+
     })
 
 });
@@ -76,7 +76,7 @@ function socketEmitCommon(){
     })
     scene.traverse(function (object) {
             // console.log(scene);
-            // console.log(object); 
+            // console.log(object);
             // console.log(object.material);
             // if(object.material && object.material.map && object.material.map.source && object.material.map.source.uuid){
             //     console.log("uuid of all object is "+object.material.map.source.uuid);
@@ -98,7 +98,7 @@ function socketEmitCommon(){
             //     console.log( "material map is ", material.map ); //can get map but its image is undefined
             //     console.log( "material map image is ", material.map.image ); //material map image is  undefined
             // }
-          
+
             allMeshObjects.push({"meshName":object.name,"meshObject":object});
         }
     });
@@ -237,12 +237,12 @@ const renderControls = new function () {
 
 
 
-//Have mesh attributes outside for manuipulation throught controls. 
+//Have mesh attributes outside for manuipulation throught controls.
 //Center court divided into two halves
 var plane1Mesh, plane2Mesh;
 //Border divided into 4 planes
 var borderupPlane1Mesh, borderbottomPlane1Mesh, borderleftPlane1Mesh, borderrightPlane1Mesh;
-//Lines 
+//Lines
 var lineplane2Mesh, ellipseRight, ellipseLeft, ellipseLeftBig, ellipseRightBig;
 //Goal variables
 var poleLcylinder, poleRcylinder;
@@ -270,7 +270,7 @@ const createCenterCourt = function () {
     plane1Mesh.position.set(0, 0, 0);
     var geometry2 = new THREE.PlaneGeometry(10, 10);
     //var material2 = new THREE.MeshBasicMaterial({ color: 0x2c9fd8, side: THREE.DoubleSide });
-   
+
     const material2 = new THREE.MeshBasicMaterial({
         //
         side: THREE.DoubleSide,
@@ -339,7 +339,7 @@ var createBorder = function () {
 }
 
 const createAllLines = function () {
-    //Centerline made it a plane 
+    //Centerline made it a plane
     var linegeometry2 = new THREE.PlaneGeometry(0.05, 10);
     var linematerial2 = new THREE.MeshBasicMaterial({
         color: 0xffffff,
@@ -579,9 +579,19 @@ camera.position.y = -180;
 
 var controls = new OrbitControls(camera, renderer.domElement);
 controls.enabled = true;
-controls.enableRotate = true;
+// controls.enableRotate = false;
 // controls.pan = false;
 controls.enableZoom = true;
+
+// How far you can orbit vertically, upper and lower limits.
+// Range is 0 to Math.PI radians.
+//  controls.minPolarAngle =  Math.PI/8; // radians
+//  controls.maxPolarAngle =  0; // radians
+
+// How far you can orbit horizontally, upper and lower limits.
+// If set, must be a sub-interval of the interval [ - Math.PI, Math.PI ].
+controls.minAzimuthAngle = -Math.PI/8; // radians
+controls.maxAzimuthAngle = Math.PI/8; // radians
 
 
 //create a group and all objects to the group
@@ -630,7 +640,7 @@ requestAnimationFrame(function animate() {
     renderer.render(backgroundScene, backgroundCamera);
     renderer.render(scene, camera);
 
-    //document.getElementById('artifactCanvas').appendChild(renderer.domElement);
+    document.getElementById('artifactCanvas').appendChild(renderer.domElement);
 })
 
 function createCourtComponents() {
