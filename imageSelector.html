@@ -1,0 +1,76 @@
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" />
+    <style>
+        #mainCarousel {
+            color: #170724;
+            width: 500px;
+
+            --carousel-button-bg: #fff;
+            --carousel-button-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%),
+                0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
+
+            --carousel-button-svg-width: 20px;
+            --carousel-button-svg-height: 20px;
+
+            --carousel-button-svg-stroke-width: 2.5;
+        }
+
+        #mainCarousel .carousel__slide {
+            background-size: cover;
+            width: 50%;            
+            color: #fff;
+            font-size: 3em;
+            height: 120px;
+        }
+
+       
+
+        /* Resize images */
+        .carousel__slide img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Select background image</h2>
+    <div id="mainCarousel" class="carousel mb-4 w-10/12 max-w-xl mx-auto">
+        
+        <div class="carousel__slide">
+            <img data-lazy-src="carouselImages/1.jpg" onclick="changeBackground(this)"/>
+        </div>
+        <div class="carousel__slide">
+            <img data-lazy-src="carouselImages/2.jpg" onclick="changeBackground(this)" />
+        </div>
+        <div class="carousel__slide">
+            <img data-lazy-src="carouselImages/3.jpg" onclick="changeBackground(this)"/>
+        </div>
+        <div class="carousel__slide">
+            <img data-lazy-src="carouselImages/4.jpg" onclick="changeBackground(this)" />
+        </div>
+        <div class="carousel__slide">
+            <img data-lazy-src="carouselImages/5.jpg" onclick="changeBackground(this)"/>
+        </div>
+
+
+    </div>
+    <script>
+        const myCarousel = new Carousel(document.querySelector(".carousel"), {
+            // Options
+        });
+        const changeBackground= function(image){
+            console.log(image.src);
+            let name =image.attributes[2].value;
+            let nameSplit = name.split("/");
+            let lastSplit = nameSplit[nameSplit.length - 1];
+            console.log(lastSplit);
+        }
+
+    </script>
+</body>
+
+</html>
