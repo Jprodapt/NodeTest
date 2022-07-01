@@ -121,17 +121,9 @@
             background-color: #f9f9f9;
         }
     </style>
-    <script type="importmap">{
-        "imports": {
-            "three": "https://threejs.org/build/three.module.js",
-            "http": "https://github.com/nodejs/node/blob/v17.0.0/lib/http.js",
-            "socket.io-client": "https://cdn.socket.io/4.4.1/socket.io.esm.min.js",
-            "three.meshline" : "./courtjs/THREE.MeshLine.js"
-        }
-    }</script>
-    <!-- <script type="module" src="https://threejs.org/build/three.module.js"></script> -->
-    <script type="module" src="courtjs/court3js.js"></script>
 
+
+    <script type="module" src="courtjs/court3js.js"></script>
     <!-- <script type="module" src="courtjs/THREE.MeshLine.js"></script>  -->
 
     <script>
@@ -273,7 +265,7 @@
             </div>
         </div>
 
-        
+
 
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -293,7 +285,7 @@
                             <li>Click pics on your phone change use the upload icon next to the info icon to upload</li>
                             <li>Use the controls on the right to change colors of your court</li>
                         </ul>
-                        
+
                     </div>
 
                     <div >
@@ -389,9 +381,9 @@
                     </label>
 
                     <input id="file-input" type="file" />
-                    
+
                 </div>
-                
+
             </div>
 
             <div class="d-none d-sm-block" id="holderCourt"
@@ -459,13 +451,13 @@
         <div class="chat-frame" style="position: absolute;top:30px;left:45%;cursor: pointer;">
             <img src="chat.png" width="120" alt="chat icon" id="myBtn">
         </div>
-        
+
         <div id="viewport">
             <canvas id="artifactCanvas" style="width: 100%; height: 800px; touch-action: none; cursor: auto;">
             </canvas>
         </div>
-        
-        <!-- 
+
+        <!--
         <form id="form" action="">
             <input id="input" autocomplete="off" /><button>Send</button>
         </form>

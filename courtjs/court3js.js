@@ -1,11 +1,9 @@
 import * as THREE from '../three.module.js';
-import { OrbitControls } from '../OrbitControls1.js';
+import {OrbitControls} from '../OrbitControls1.js';
 import {
     GUI
 } from '../lil-gui.module.min.js';
-
-
-
+import { MeshLine, MeshLineMaterial } from '../THREE.MeshLine.js';
 
 function getCookie(cname) {
     let name = cname + "=";
@@ -27,7 +25,7 @@ var uuidCookie = getCookie('uuidCookie');
 console.log(uuidCookie);
 
 var courtCacheCookie = getCookie('courtCacheCookie');
-console.log("court cache cookie values "+courtCacheCookie);
+console.log("court cache cookie values " + courtCacheCookie);
 
 var allProperties = {};
 
@@ -37,7 +35,7 @@ socket.on(uuidCookie, function (msg) {
     //console.log(msg);
     const obj = msg;
     //If its a chat message do the below
-    if(!Array.isArray(obj)){
+    if (!Array.isArray(obj)) {
         var item = document.createElement('li');
         item.textContent = msg;
         messages.appendChild(item);
@@ -49,16 +47,16 @@ socket.on(uuidCookie, function (msg) {
     var meshobj = eval(obj[0].meshName);
     obj.forEach(object1 => {
         //Have a different logic for back ground mesh. Cos its not part of the actual scene
-        if(object1.meshName){
+        if (object1.meshName) {
             meshobj = eval(object1.meshName);
-            if(object1.meshObject.textures){
-                console.log("texture "+object1.meshObject.textures[0].name);
+            if (object1.meshObject.textures) {
+                console.log("texture " + object1.meshObject.textures[0].name);
                 var texture1 = new THREE.TextureLoader().load(object1.meshObject.textures[0].name);
                 texture1.name = object1.meshObject.textures[0].name;
-                meshobj.material.map =  texture1;
+                meshobj.material.map = texture1;
             }
-            if(object1.meshObject.materials[0].color){
-                console.log("color "+object1.meshObject.materials[0].color);
+            if (object1.meshObject.materials[0].color) {
+                console.log("color " + object1.meshObject.materials[0].color);
                 meshobj.material.color = new THREE.Color(object1.meshObject.materials[0].color);
             }
         }
@@ -67,21 +65,21 @@ socket.on(uuidCookie, function (msg) {
 
 });
 
-function socketEmitCommon(){
-    var allMeshObjects=[];
-    backgroundScene.traverse(function(object){
+function socketEmitCommon() {
+    var allMeshObjects = [];
+    backgroundScene.traverse(function (object) {
         if (object.isMesh) {
-            allMeshObjects.push({"meshName":object.name,"meshObject":object});
+            allMeshObjects.push({"meshName": object.name, "meshObject": object});
         }
     })
     scene.traverse(function (object) {
-            // console.log(scene);
-            // console.log(object);
-            // console.log(object.material);
-            // if(object.material && object.material.map && object.material.map.source && object.material.map.source.uuid){
-            //     console.log("uuid of all object is "+object.material.map.source.uuid);
-            //     console.log(scene.getObjectById(object.material.map.source.uuid));
-            // }
+        // console.log(scene);
+        // console.log(object);
+        // console.log(object.material);
+        // if(object.material && object.material.map && object.material.map.source && object.material.map.source.uuid){
+        //     console.log("uuid of all object is "+object.material.map.source.uuid);
+        //     console.log(scene.getObjectById(object.material.map.source.uuid));
+        // }
         if (object.isMesh) {
             // var material = object.material;
             // if(object.texutres){
@@ -99,12 +97,11 @@ function socketEmitCommon(){
             //     console.log( "material map image is ", material.map.image ); //material map image is  undefined
             // }
 
-            allMeshObjects.push({"meshName":object.name,"meshObject":object});
+            allMeshObjects.push({"meshName": object.name, "meshObject": object});
         }
     });
     socket.emit(uuidCookie, allMeshObjects);
 }
-
 
 
 const renderControls = new function () {
@@ -139,7 +136,8 @@ const renderControls = new function () {
             plane2Mesh.material.color = new THREE.Color(value);
             renderer.render(scene, camera);
             socketEmitCommon();
-        });;
+        });
+        ;
 
         gui.addColor(obj, 'Border color').onChange(value => {
             borderupPlane1Mesh.material.color = new THREE.Color(value);
@@ -149,13 +147,15 @@ const renderControls = new function () {
             renderer.render(scene, camera);
             socketEmitCommon();
 
-        });;
+        });
+        ;
         gui.addColor(obj, 'Keys color').onChange(value => {
             keysrightPlane1Mesh.material.color = new THREE.Color(value);
             keysleftPlane1Mesh.material.color = new THREE.Color(value);
             renderer.render(scene, camera);
             socketEmitCommon();
-        });;
+        });
+        ;
         gui.addColor(obj, 'Line color').onChange(value => {
             ellipseRight.material.color = new THREE.Color(value);
             ellipseLeft.material.color = new THREE.Color(value);
@@ -164,7 +164,8 @@ const renderControls = new function () {
             renderer.render(scene, camera);
             socketEmitCommon();
 
-        });;
+        });
+        ;
         const teamLogoFolder = gui.addFolder('Team Logo')
         var team = {
             "Pick a team": ''
@@ -235,8 +236,6 @@ const renderControls = new function () {
 }
 
 
-
-
 //Have mesh attributes outside for manuipulation throught controls.
 //Center court divided into two halves
 var plane1Mesh, plane2Mesh;
@@ -252,18 +251,23 @@ var centerCircleMesh, keysrightPlane1Mesh, keysleftPlane1Mesh;
 var hoopLeftPlane1Mesh, hoopRightPlane1Mesh;
 
 
-
 const createCenterCourt = function () {
     var geometry1 = new THREE.PlaneGeometry(10, 10);
     //var material1 = new THREE.MeshBasicMaterial({ color: 0x2c9fd8, side: THREE.DoubleSide });
     var texture1 = new THREE.TextureLoader().load('courtTexture/woodtexture1.jpg');
-    texture1.name ='courtTexture/woodtexture1.jpg';
+    texture1.name = 'courtTexture/woodtexture1.jpg';
+    // const material1 = new THREE.MeshBasicMaterial({
+    //     //
+    //     side: THREE.DoubleSide,
+    //     depthWrite: true,
+    //     map: texture1
+    //
+    // });
     const material1 = new THREE.MeshBasicMaterial({
-        //
-        side: THREE.DoubleSide,
-        depthWrite: true,
+        side: THREE.FrontSide,
+        color: 0xffffff,
+        depthWrite: false,
         map: texture1
-
     });
     plane1Mesh = new THREE.Mesh(geometry1, material1);
     plane1Mesh.name = "plane1Mesh";
@@ -273,8 +277,9 @@ const createCenterCourt = function () {
 
     const material2 = new THREE.MeshBasicMaterial({
         //
-        side: THREE.DoubleSide,
-        depthWrite: true,
+        side: THREE.FrontSide,
+        color: 0xffffff,
+        depthWrite: false,
         map: texture1
 
     });
@@ -335,7 +340,6 @@ var createBorder = function () {
     group.add(borderrightPlane1Mesh);
 
 
-
 }
 
 const createAllLines = function () {
@@ -357,17 +361,17 @@ const createAllLines = function () {
         false, // aClockwise
         0 // aRotation
     );
-    const curveLPoints = curveLeft.getPoints(50);
+    const curveLPoints = curveLeft.getPoints(1000);
     const curveLGeometry = new THREE.BufferGeometry().setFromPoints(curveLPoints);
-    const curveLMaterial = new THREE.LineBasicMaterial({
-        color: 0xffffff,
-        linewidth: 1
+    const curveLMaterial = new MeshLineMaterial({
+        lineWidth: 0.15
     });
+    const lineLMesh = new MeshLine();
+    lineLMesh.setGeometry( curveLGeometry);
     // Create the final object to add to the scene
-    ellipseLeft = new THREE.Line(curveLGeometry, curveLMaterial);
+    ellipseLeft = new THREE.Line(lineLMesh, curveLMaterial);
     //ellipseLeft.position.set(5, 0, 0.025);
 
-    //Right small curve
     const curveRight = new THREE.EllipseCurve(
         10, 0, // ax, aY
         1.5, 1.5, // xRadius, yRadius
@@ -375,15 +379,17 @@ const createAllLines = function () {
         false, // aClockwise
         0 // aRotation
     );
-    const curveRPoints = curveRight.getPoints(50);
+    const curveRPoints = curveRight.getPoints(1000);
     const curveRGeometry = new THREE.BufferGeometry().setFromPoints(curveRPoints);
-    const curveRMaterial = new THREE.LineBasicMaterial({
-        color: 0xffffff,
-        linewidth: 1
+    const curveRMaterial = new MeshLineMaterial({
+        lineWidth: 0.15
     });
+
+    const lineRMesh = new MeshLine();
+    lineRMesh.setGeometry( curveRGeometry);
+
     // Create the final object to add to the scene
-    ellipseRight = new THREE.Line(curveRGeometry, curveRMaterial);
-    //ellipseRight.position.set(5, 0, 0.025);
+    ellipseRight = new THREE.Mesh(lineRMesh, curveRMaterial);
 
     //Left big curve
     const curveLeftBig = new THREE.EllipseCurve(
@@ -393,14 +399,15 @@ const createAllLines = function () {
         false, // aClockwise
         0 // aRotation
     );
-    const curveLPointsBig = curveLeftBig.getPoints(100);
+    const curveLPointsBig = curveLeftBig.getPoints(1000);
     const curveLGeometryBig = new THREE.BufferGeometry().setFromPoints(curveLPointsBig);
-    const curveLMaterialBig = new THREE.LineBasicMaterial({
-        color: 0xffffff,
-        linewidth: 100
+    const curveLMaterialBig = new MeshLineMaterial({
+        lineWidth: 0.15
     });
+    const lineLMeshBig = new MeshLine();
+    lineLMeshBig.setGeometry( curveLGeometryBig);
     // Create the final object to add to the scene
-    ellipseLeftBig = new THREE.Line(curveLGeometryBig, curveLMaterialBig);
+    ellipseLeftBig = new THREE.Line(lineLMeshBig, curveLMaterialBig);
     //ellipseLeftBig.position.set(5, 0, 0.025);
 
     //Right big curve
@@ -411,14 +418,15 @@ const createAllLines = function () {
         false, // aClockwise
         0 // aRotation
     );
-    const curveRPointsBig = curveRightBig.getPoints(50);
+    const curveRPointsBig = curveRightBig.getPoints(1000);
     const curveRGeometryBig = new THREE.BufferGeometry().setFromPoints(curveRPointsBig);
-    const curveRMaterialBig = new THREE.LineBasicMaterial({
-        color: 0xffffff,
-        linewidth: 10
+    const curveRMaterialBig = new MeshLineMaterial({
+        lineWidth: 0.15
     });
+    const lineRMeshBig = new MeshLine();
+    lineRMeshBig.setGeometry( curveRGeometryBig);
     // Create the final object to add to the scene
-    ellipseRightBig = new THREE.Line(curveRGeometryBig, curveRMaterialBig);
+    ellipseRightBig = new THREE.Line(lineRMeshBig, curveRMaterialBig);
     //ellipseLeftBig.position.set(5, 0, 0.025);
 
 
@@ -495,7 +503,7 @@ var createHoops = function () {
 var createCenterCircle = function () {
     const centerCircleGeometry = new THREE.CircleGeometry(2, 50);
     var texture = new THREE.TextureLoader().load('basketball1.jpg');
-    texture.name='basketball1.jpg';
+    texture.name = 'basketball1.jpg';
     const centerCircleMaterial = new THREE.MeshBasicMaterial({
         //
         side: THREE.DoubleSide,
@@ -533,12 +541,13 @@ var createKeys = function () {
 }
 
 var printAllObjects = function () {
-    var allMeshObjects=[];
+    var allMeshObjects = [];
     scene.traverse(function (object) {
-        if (object.isMesh) {allMeshObjects.push(object);}
+        if (object.isMesh) {
+            allMeshObjects.push(object);
+        }
     });
 }
-
 
 
 // init renderer
@@ -590,8 +599,8 @@ controls.enableZoom = true;
 
 // How far you can orbit horizontally, upper and lower limits.
 // If set, must be a sub-interval of the interval [ - Math.PI, Math.PI ].
-controls.minAzimuthAngle = -Math.PI/8; // radians
-controls.maxAzimuthAngle = Math.PI/8; // radians
+controls.minAzimuthAngle = -Math.PI / 8; // radians
+controls.maxAzimuthAngle = Math.PI / 8; // radians
 
 
 //create a group and all objects to the group
@@ -616,13 +625,13 @@ scene.add(lights[2]);
 
 // Load the background texture
 var backgroundTexture = new THREE.TextureLoader().load('carouselImages/1.jpg')
-backgroundTexture.name='carouselImages/1.jpg';
+backgroundTexture.name = 'carouselImages/1.jpg';
 var backgroundMesh = new THREE.Mesh(
     new THREE.PlaneGeometry(2, 2),
     new THREE.MeshBasicMaterial({
         map: backgroundTexture
     }));
-backgroundMesh.name='backgroundMesh';
+backgroundMesh.name = 'backgroundMesh';
 backgroundMesh.material.depthTest = false;
 backgroundMesh.material.depthWrite = false;
 
@@ -640,7 +649,7 @@ requestAnimationFrame(function animate() {
     renderer.render(backgroundScene, backgroundCamera);
     renderer.render(scene, camera);
 
-    document.getElementById('artifactCanvas').appendChild(renderer.domElement);
+    //document.getElementById('artifactCanvas').appendChild(renderer.domElement);
 })
 
 function createCourtComponents() {
@@ -660,7 +669,6 @@ function createCourtComponents() {
 createCourtComponents();
 
 
-
 const allCarouselImages = document.querySelectorAll('.carousel-item');
 allCarouselImages.forEach(function (carouselItem) {
     const image = carouselItem.children[0];
@@ -676,16 +684,15 @@ function changeBackground() {
     let nameSplit = name.split("/");
     let lastSplit = nameSplit[nameSplit.length - 1];
     //console.log(lastSplit);
-    if (name.includes("carouselImages")){
+    if (name.includes("carouselImages")) {
         var texture1 = new THREE.TextureLoader().load("carouselImages/" + lastSplit);
-        texture1.name ="carouselImages/" + lastSplit;
+        texture1.name = "carouselImages/" + lastSplit;
         backgroundMesh.material.map = texture1;
         socketEmitCommon();
-    }
-    else {
+    } else {
         //console.log("change to court")
         var texture1 = new THREE.TextureLoader().load("courtTexture/" + lastSplit);
-        texture1.name ="courtTexture/" + lastSplit;
+        texture1.name = "courtTexture/" + lastSplit;
         plane1Mesh.material.map = texture1;
         plane2Mesh.material.map = texture1;
         socketEmitCommon();
@@ -739,7 +746,7 @@ function setupDragDropForBackground() {
         e.preventDefault();
 
         var file = e.dataTransfer.files[0],
-                reader = new FileReader();
+            reader = new FileReader();
         reader.onload = function (event) {
             console.log(event.target);
             console.log(event);
@@ -749,8 +756,8 @@ function setupDragDropForBackground() {
             image.src = event.target.result;
             var texture = new THREE.Texture(image);
             texture.needsUpdate = true;
-            console.log('Image src :;;  '+image.src);
-            texture.name =image.src;
+            console.log('Image src :;;  ' + image.src);
+            texture.name = image.src;
             backgroundMesh.material.map = texture;
             socketEmitCommon();
         };
@@ -782,7 +789,7 @@ function setupDragDropForCourt() {
         e.preventDefault();
 
         var file = e.dataTransfer.files[0],
-                reader = new FileReader();
+            reader = new FileReader();
         reader.onload = function (event) {
             console.log(event.target);
             console.log(event);
@@ -792,10 +799,10 @@ function setupDragDropForCourt() {
             image.src = event.target.result;
             var texture = new THREE.Texture(image);
             texture.needsUpdate = true;
-            console.log('Image src :;;  '+image.src);
-            texture.name =image.src;
-            plane1Mesh.material.map  = texture;
-            plane2Mesh.material.map  = texture;
+            console.log('Image src :;;  ' + image.src);
+            texture.name = image.src;
+            plane1Mesh.material.map = texture;
+            plane2Mesh.material.map = texture;
             socketEmitCommon();
         };
         reader.readAsDataURL(file);

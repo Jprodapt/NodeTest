@@ -48,7 +48,9 @@ app.get('/drag', (req, res) => {
   res.sendFile(__dirname + '/DragFile.html');
 });
 
-
+app.get('/threeLine', (req, res) => {
+  res.sendFile(__dirname + '/ThreeLine.html');
+});
 
 app.get('/basketball1', (req, res) => {
   res.sendFile(__dirname + '/CourtMobile.html');
