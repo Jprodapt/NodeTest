@@ -108,12 +108,10 @@ const renderControls = new function () {
     const gui = new GUI();
     this.addControls = function () {
         var obj = {
-            //"Left half color": '#00ff00',
             "Court color": '#00ff00',
-            //"Right half color": '#156289',
             "Border color": '#ffffff',
-            "Keys color": "#f53259",
-            "Line color": "#ff0000",
+            "Key color": "#f53259",
+            "Line color": '#ff0000'
         }
 
         // gui.addColor(obj, 'Left half color').onChange(value => {
@@ -149,88 +147,66 @@ const renderControls = new function () {
 
         });
         ;
-        gui.addColor(obj, 'Keys color').onChange(value => {
+        gui.addColor(obj, 'Key color').onChange(value => {
             keysrightPlane1Mesh.material.color = new THREE.Color(value);
             keysleftPlane1Mesh.material.color = new THREE.Color(value);
             renderer.render(scene, camera);
             socketEmitCommon();
         });
-        ;
-        gui.addColor(obj, 'Line color').onChange(value => {
+
+        var lineColor = {
+            "Line color": ''
+        }
+        gui.add(lineColor, 'Line color', {
+            'White': '#FFFFFF',
+            'Black': '#000000',
+            'Grey': '#808080',
+            'Yellow': '#FFFF00'
+        }).onChange(value => {
+            //Comment for now. Not sure if needed to be set to null for SOCKETIO Communciation
+            //ellipseRight.material.color = null;
             ellipseRight.material.color = new THREE.Color(value);
             ellipseLeft.material.color = new THREE.Color(value);
             ellipseLeftBig.material.color = new THREE.Color(value);
             ellipseRightBig.material.color = new THREE.Color(value);
             renderer.render(scene, camera);
             socketEmitCommon();
-
-        });
-        ;
-        const teamLogoFolder = gui.addFolder('Team Logo')
-        var team = {
-            "Pick a team": ''
-        }
-        gui.add(team, 'Pick a team', {
-            'Boston': 'A',
-            'Golden State': 'B',
-            'Detroit': 'C'
-        }).onChange(value => {
-            if (value == 'A') {
-                centerCircleMesh.material.map = new THREE.TextureLoader().load('boston.png')
-                socket.emit('propChanges', {
-                    "meshName": "centerCircleMesh",
-                    "value": "boston.png"
-                });
-            }
-            if (value == 'B') {
-                centerCircleMesh.material.map = new THREE.TextureLoader().load('warriors.png')
-                socket.emit('propChanges', {
-                    "meshName": "centerCircleMesh",
-                    "value": "warriors.png"
-                });
-            }
-            if (value == 'C') {
-                centerCircleMesh.material.map = new THREE.TextureLoader().load('detroit.png')
-                socket.emit('propChanges', {
-                    "meshName": "centerCircleMesh",
-                    "value": "detroit.png"
-                });
-            }
-
-
-        });
-        teamLogoFolder.close()
-
-        const textureBorderFolder = gui.addFolder('Center court Texture')
-        var centerCourt = {
-            "Pick texture for Center court": ''
-        }
-        gui.add(centerCourt, 'Pick texture for Center court', {
-            'Texture1': 'A',
-            'Texture2': 'B',
-            'Texture3': 'C'
-        }).onChange(value => {
-            plane1Mesh.material.color = null;
-            if (value == 'A') {
-                plane1Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture1.jpg')
-                plane2Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture1.jpg')
-                //socket.emit('propChanges', {"meshName":"borderupPlane1Mesh", "value":"woodtexture1.jpg"});
-            }
-            if (value == 'B') {
-                plane1Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture2.jpg')
-                plane2Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture2.jpg')
-                //socket.emit('propChanges', {"meshName":"borderupPlane1Mesh", "value":"woodtexture2.jpg"});
-            }
-            if (value == 'C') {
-                plane1Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture3.jpg')
-                plane2Mesh.material.map = new THREE.TextureLoader().load('courtTexture/woodtexture3.jpg')
-                //socket.emit('propChanges', {"meshName":"borderupPlane1Mesh", "value":"woodtexture3.jpg"});
-            }
-
             renderer.render(scene, camera);
 
         });
-        textureBorderFolder.close();
+
+        var team = {
+            "Pick a team": ''
+        }
+        // gui.add(team, 'Pick a team', {
+        //     'Boston': 'A',
+        //     'Golden State': 'B',
+        //     'Detroit': 'C'
+        // }).onChange(value => {
+        //     if (value == 'A') {
+        //         centerCircleMesh.material.map = new THREE.TextureLoader().load('boston.png')
+        //         socket.emit('propChanges', {
+        //             "meshName": "centerCircleMesh",
+        //             "value": "boston.png"
+        //         });
+        //     }
+        //     if (value == 'B') {
+        //         centerCircleMesh.material.map = new THREE.TextureLoader().load('warriors.png')
+        //         socket.emit('propChanges', {
+        //             "meshName": "centerCircleMesh",
+        //             "value": "warriors.png"
+        //         });
+        //     }
+        //     if (value == 'C') {
+        //         centerCircleMesh.material.map = new THREE.TextureLoader().load('detroit.png')
+        //         socket.emit('propChanges', {
+        //             "meshName": "centerCircleMesh",
+        //             "value": "detroit.png"
+        //         });
+        //     }
+        //
+        //
+        // });
 
     }
 }
@@ -256,6 +232,9 @@ const createCenterCourt = function () {
     //var material1 = new THREE.MeshBasicMaterial({ color: 0x2c9fd8, side: THREE.DoubleSide });
     var texture1 = new THREE.TextureLoader().load('courtTexture/woodtexture1.jpg');
     texture1.name = 'courtTexture/woodtexture1.jpg';
+    // texture1.wrapS = THREE.RepeatWrapping;
+    // texture1.wrapT = THREE.RepeatWrapping;
+    // texture1.repeat.set( 4, 4 );
     // const material1 = new THREE.MeshBasicMaterial({
     //     //
     //     side: THREE.DoubleSide,
@@ -442,22 +421,22 @@ const createAllLines = function () {
 var createPoles = function () {
 
     //Pole left
-    const poleLgeometry = new THREE.CylinderGeometry(0.1, 0.1, 3, 5);
+    const poleLgeometry = new THREE.CylinderGeometry(0.1, 0.1, 6, 5);
     const poleLmaterial = new THREE.MeshBasicMaterial({
         color: 0x465962
     });
     poleLcylinder = new THREE.Mesh(poleLgeometry, poleLmaterial);
-    poleLcylinder.position.set(-5, 0, 1.5);
+    poleLcylinder.position.set(-5, 0, 3.0);
     poleLcylinder.rotation.x = Math.PI / 2;
 
 
     //Pole right
-    const poleRgeometry = new THREE.CylinderGeometry(0.1, 0.1, 3, 5);
+    const poleRgeometry = new THREE.CylinderGeometry(0.1, 0.1, 6, 5);
     const poleRmaterial = new THREE.MeshBasicMaterial({
         color: 0x465962
     });
     poleRcylinder = new THREE.Mesh(poleRgeometry, poleRmaterial);
-    poleRcylinder.position.set(15, 0, 1.5);
+    poleRcylinder.position.set(15, 0, 3.0);
     poleRcylinder.rotation.x = Math.PI / 2;
 
     poleRcylinder.name = 'poleRcylinder';
@@ -470,26 +449,26 @@ var createPoles = function () {
 
 var createHoops = function () {
     //Hoop left
-    var hoopLeftGeometry = new THREE.PlaneGeometry(2.5, 1.5);
+    var hoopLeftGeometry = new THREE.PlaneGeometry(4.5, 1.5);
     var hoopLeftMaterial = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         side: THREE.DoubleSide,
         map: new THREE.TextureLoader().load('hoop3.jpg')
     });
     hoopLeftPlane1Mesh = new THREE.Mesh(hoopLeftGeometry, hoopLeftMaterial);
-    hoopLeftPlane1Mesh.position.set(-4.85, 0, 2.5);
+    hoopLeftPlane1Mesh.position.set(-4.85, 0, 5.0);
     hoopLeftPlane1Mesh.rotation.y = Math.PI / 2;
     hoopLeftPlane1Mesh.rotation.z = Math.PI / 2;
 
     //Hoop right
-    var hoopRightGeometry = new THREE.PlaneGeometry(2.5, 1.5);
+    var hoopRightGeometry = new THREE.PlaneGeometry(4.5, 1.5);
     var hoopRightMaterial = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         side: THREE.DoubleSide,
         map: new THREE.TextureLoader().load('hoop3.jpg')
     });
     hoopRightPlane1Mesh = new THREE.Mesh(hoopRightGeometry, hoopRightMaterial);
-    hoopRightPlane1Mesh.position.set(14.85, 0, 2.5);
+    hoopRightPlane1Mesh.position.set(14.85, 0, 5.0);
     hoopRightPlane1Mesh.rotation.y = Math.PI / 2;
     hoopRightPlane1Mesh.rotation.z = Math.PI / 2;
     hoopRightPlane1Mesh.name = 'hoopRightPlane1Mesh';
@@ -502,7 +481,7 @@ var createHoops = function () {
 
 var createCenterCircle = function () {
     const centerCircleGeometry = new THREE.CircleGeometry(2, 50);
-    var texture = new THREE.TextureLoader().load('basketball1.jpg');
+    var texture = new THREE.TextureLoader().load('CenterCourtImage/DreamCourt_circle.png');
     texture.name = 'basketball1.jpg';
     const centerCircleMaterial = new THREE.MeshBasicMaterial({
         //
@@ -512,14 +491,14 @@ var createCenterCircle = function () {
 
     });
     centerCircleMesh = new THREE.Mesh(centerCircleGeometry, centerCircleMaterial);
-    centerCircleMesh.position.set(5, 0, 0.025);
+    centerCircleMesh.position.set(5, 0, 0.035);
     centerCircleMesh.name = 'centerCircleMesh';
     group.add(centerCircleMesh);
 }
 
 
 var createKeys = function () {
-    var keysrightGeometry = new THREE.PlaneGeometry(5, 3);
+    var keysrightGeometry = new THREE.PlaneGeometry(5, 3.3);
     var keysrightMaterial = new THREE.MeshBasicMaterial({
         color: 0x9b1c1c,
         side: THREE.DoubleSide
@@ -528,7 +507,7 @@ var createKeys = function () {
     keysrightPlane1Mesh.position.set(12.5, 0, 0.025);
     keysrightPlane1Mesh.name = 'keysrightPlane1Mesh';
 
-    var keysleftGeometry = new THREE.PlaneGeometry(5, 3);
+    var keysleftGeometry = new THREE.PlaneGeometry(5, 3.3);
     var keysleftMaterial = new THREE.MeshBasicMaterial({
         color: 0x9b1c1c,
         side: THREE.DoubleSide
@@ -554,7 +533,7 @@ var printAllObjects = function () {
 var renderer = new THREE.WebGLRenderer({
     canvas: artifactCanvas
 });
-
+renderer.setPixelRatio( window.devicePixelRatio );
 //document.getElementById('viewport').appendChild(renderer.domElement);
 
 let HEIGHT = window.innerHeight;
@@ -570,7 +549,7 @@ scene.fog = new THREE.Fog(0xf7d9aa, 100, 950);
 
 // Create the camera
 var aspectRatio = WIDTH / HEIGHT;
-var fieldOfView = 10;
+var fieldOfView = 40;
 var nearPlane = 5;
 var farPlane = 1000;
 var camera = new THREE.PerspectiveCamera(
@@ -582,8 +561,8 @@ var camera = new THREE.PerspectiveCamera(
 
 // Set the position of the camera
 camera.position.x = 0;
-camera.position.z = 80;
-camera.position.y = -180;
+camera.position.y = -60;
+camera.position.z = 50;
 
 
 var controls = new OrbitControls(camera, renderer.domElement);
@@ -606,12 +585,12 @@ controls.maxAzimuthAngle = Math.PI / 8; // radians
 //create a group and all objects to the group
 //All meshes can now be rotated / scaled etc as a group
 const group = new THREE.Group();
-group.position.set(-11, -28.5, 1);
-group.scale.set(2.55, 1.2, 1.5);
+group.position.set(-7.0, -44.5, 30);
+group.scale.set(1.35, 0.65, 0.5);
 scene.add(group);
 
 const lights = [];
-lights[0] = new THREE.PointLight(0xffffff, 1, 0);
+lights[0] = new THREE.PointLight(0x000000, 1, 0);
 lights[1] = new THREE.PointLight(0xffffff, 1, 0);
 lights[2] = new THREE.PointLight(0xffffff, 1, 0);
 
@@ -648,7 +627,6 @@ requestAnimationFrame(function animate() {
     renderer.clear();
     renderer.render(backgroundScene, backgroundCamera);
     renderer.render(scene, camera);
-
     //document.getElementById('artifactCanvas').appendChild(renderer.domElement);
 })
 
@@ -692,6 +670,9 @@ function changeBackground() {
     } else {
         //console.log("change to court")
         var texture1 = new THREE.TextureLoader().load("courtTexture/" + lastSplit);
+        // texture1.wrapS = THREE.RepeatWrapping;
+        // texture1.wrapT = THREE.RepeatWrapping;
+        // texture1.repeat.set( 4, 4 );
         texture1.name = "courtTexture/" + lastSplit;
         plane1Mesh.material.map = texture1;
         plane2Mesh.material.map = texture1;
