@@ -4,6 +4,7 @@ import {
     GUI
 } from '../lil-gui.module.min.js';
 import { MeshLine, MeshLineMaterial } from '../THREE.MeshLine.js';
+import { courtColors } from './courtColors.js';
 
 function getCookie(cname) {
     let name = cname + "=";
@@ -107,12 +108,6 @@ function socketEmitCommon() {
 const renderControls = new function () {
     const gui = new GUI();
     this.addControls = function () {
-        var obj = {
-            "Court color": '#00ff00',
-            "Border color": '#ffffff',
-            "Key color": "#f53259",
-            "Line color": '#ff0000'
-        }
 
         // gui.addColor(obj, 'Left half color').onChange(value => {
         //     plane1Mesh.material.color = new THREE.Color(value);
@@ -128,16 +123,20 @@ const renderControls = new function () {
         //         "value": value
         //     });
         // });;
-
-        gui.addColor(obj, 'Court color').onChange(value => {
+        var courtColor = {
+            "Court color": ''
+        }
+        gui.add(courtColor, 'Court color', courtColors).onChange(value => {
             plane1Mesh.material.color = new THREE.Color(value);
             plane2Mesh.material.color = new THREE.Color(value);
             renderer.render(scene, camera);
             socketEmitCommon();
         });
-        ;
 
-        gui.addColor(obj, 'Border color').onChange(value => {
+        var borderColor = {
+            "Border color": ''
+        }
+        gui.add(borderColor, 'Border color', courtColors).onChange(value => {
             borderupPlane1Mesh.material.color = new THREE.Color(value);
             borderbottomPlane1Mesh.material.color = new THREE.Color(value);
             borderleftPlane1Mesh.material.color = new THREE.Color(value);
@@ -146,8 +145,11 @@ const renderControls = new function () {
             socketEmitCommon();
 
         });
-        ;
-        gui.addColor(obj, 'Key color').onChange(value => {
+
+        var keyColor = {
+            "Key color": ''
+        }
+        gui.add(keyColor, 'Key color', courtColors ).onChange(value => {
             keysrightPlane1Mesh.material.color = new THREE.Color(value);
             keysleftPlane1Mesh.material.color = new THREE.Color(value);
             renderer.render(scene, camera);
