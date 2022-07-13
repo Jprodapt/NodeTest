@@ -668,11 +668,13 @@ function changeBackground() {
         backgroundMesh.material.map = texture1;
         socketEmitCommon();
     } else {
-        //console.log("change to court")
+        console.log("change to court  "+lastSplit);
         var texture1 = new THREE.TextureLoader().load("courtTexture/" + lastSplit);
-        // texture1.wrapS = THREE.RepeatWrapping;
-        // texture1.wrapT = THREE.RepeatWrapping;
-        // texture1.repeat.set( 4, 4 );
+        if(lastSplit.indexOf('tile')>0){
+            texture1.wrapS = THREE.RepeatWrapping;
+            texture1.wrapT = THREE.RepeatWrapping;
+            texture1.repeat.set( 4, 4 );
+        }
         texture1.name = "courtTexture/" + lastSplit;
         plane1Mesh.material.map = texture1;
         plane2Mesh.material.map = texture1;
