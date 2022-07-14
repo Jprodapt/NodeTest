@@ -1,4 +1,4 @@
-import * as THREE from '../three.module.js';
+import * as THREE from '../three.module1.js';
 import {OrbitControls} from '../OrbitControls1.js';
 import {
     GUI
@@ -124,7 +124,7 @@ const renderControls = new function () {
         //     });
         // });;
         var courtColor = {
-            "Court color": ''
+            "Court color": '#0096FF'
         }
         gui.add(courtColor, 'Court color', courtColors).onChange(value => {
             plane1Mesh.material.color = new THREE.Color(value);
@@ -134,7 +134,7 @@ const renderControls = new function () {
         });
 
         var borderColor = {
-            "Border color": ''
+            "Border color": '#00FF00'
         }
         gui.add(borderColor, 'Border color', courtColors).onChange(value => {
             borderupPlane1Mesh.material.color = new THREE.Color(value);
@@ -147,7 +147,7 @@ const renderControls = new function () {
         });
 
         var keyColor = {
-            "Key color": ''
+            "Key color": '#800020'
         }
         gui.add(keyColor, 'Key color', courtColors ).onChange(value => {
             keysrightPlane1Mesh.material.color = new THREE.Color(value);
@@ -157,7 +157,7 @@ const renderControls = new function () {
         });
 
         var lineColor = {
-            "Line color": ''
+            "Line color": '#FFFFFF'
         }
         gui.add(lineColor, 'Line color', {
             'White': '#FFFFFF',
@@ -232,11 +232,11 @@ var hoopLeftPlane1Mesh, hoopRightPlane1Mesh;
 const createCenterCourt = function () {
     var geometry1 = new THREE.PlaneGeometry(10, 10);
     //var material1 = new THREE.MeshBasicMaterial({ color: 0x2c9fd8, side: THREE.DoubleSide });
-    var texture1 = new THREE.TextureLoader().load('courtTexture/woodtexture1.jpg');
-    texture1.name = 'courtTexture/woodtexture1.jpg';
-    // texture1.wrapS = THREE.RepeatWrapping;
-    // texture1.wrapT = THREE.RepeatWrapping;
-    // texture1.repeat.set( 4, 4 );
+    var texture1 = new THREE.TextureLoader().load('courtTexture/outdoor_tile1_color.jpg');
+    texture1.name = 'courtTexture/outdoor_tile1_color.jpg';
+    texture1.wrapS = THREE.RepeatWrapping;
+    texture1.wrapT = THREE.RepeatWrapping;
+    texture1.repeat.set( 4, 4 );
     // const material1 = new THREE.MeshBasicMaterial({
     //     //
     //     side: THREE.DoubleSide,
@@ -246,7 +246,7 @@ const createCenterCourt = function () {
     // });
     const material1 = new THREE.MeshBasicMaterial({
         side: THREE.FrontSide,
-        color: 0xffffff,
+        color: 0x0096FF,
         depthWrite: false,
         map: texture1
     });
@@ -259,7 +259,7 @@ const createCenterCourt = function () {
     const material2 = new THREE.MeshBasicMaterial({
         //
         side: THREE.FrontSide,
-        color: 0xffffff,
+        color: 0x0096FF,
         depthWrite: false,
         map: texture1
 
@@ -281,7 +281,7 @@ const createCenterCourt = function () {
 var createBorder = function () {
     var borderupGeometry = new THREE.PlaneGeometry(22, 1.2);
     var borderupMaterial = new THREE.MeshBasicMaterial({
-        color: 0x9b1c1c,
+        color: 0x00FF00,
         side: THREE.DoubleSide
     });
     borderupPlane1Mesh = new THREE.Mesh(borderupGeometry, borderupMaterial);
@@ -290,7 +290,7 @@ var createBorder = function () {
 
     var borderbottomGeometry = new THREE.PlaneGeometry(22, 1.2);
     var borderbottomMaterial = new THREE.MeshBasicMaterial({
-        color: 0x9b1c1c,
+        color: 0x00FF00,
         side: THREE.DoubleSide
     });
     borderbottomPlane1Mesh = new THREE.Mesh(borderbottomGeometry, borderbottomMaterial);
@@ -299,7 +299,7 @@ var createBorder = function () {
 
     var borderleftGeometry = new THREE.PlaneGeometry(1, 12);
     var borderleftMaterial = new THREE.MeshBasicMaterial({
-        color: 0x9b1c1c,
+        color: 0x00FF00,
         side: THREE.DoubleSide
     });
     borderleftPlane1Mesh = new THREE.Mesh(borderleftGeometry, borderleftMaterial);
@@ -308,7 +308,7 @@ var createBorder = function () {
 
     var borderrightGeometry = new THREE.PlaneGeometry(1, 12);
     var borderrightMaterial = new THREE.MeshBasicMaterial({
-        color: 0x9b1c1c,
+        color: 0x00FF00,
         side: THREE.DoubleSide
     });
     borderrightPlane1Mesh = new THREE.Mesh(borderrightGeometry, borderrightMaterial);
@@ -502,7 +502,7 @@ var createCenterCircle = function () {
 var createKeys = function () {
     var keysrightGeometry = new THREE.PlaneGeometry(5, 3.3);
     var keysrightMaterial = new THREE.MeshBasicMaterial({
-        color: 0x9b1c1c,
+        color: 0x800020,
         side: THREE.DoubleSide
     });
     keysrightPlane1Mesh = new THREE.Mesh(keysrightGeometry, keysrightMaterial);
@@ -511,7 +511,7 @@ var createKeys = function () {
 
     var keysleftGeometry = new THREE.PlaneGeometry(5, 3.3);
     var keysleftMaterial = new THREE.MeshBasicMaterial({
-        color: 0x9b1c1c,
+        color: 0x800020,
         side: THREE.DoubleSide
     });
     keysleftPlane1Mesh = new THREE.Mesh(keysleftGeometry, keysleftMaterial);
@@ -796,6 +796,8 @@ function setupDragDropForCourt() {
     }
 
 }
+
+
 
 //CHAT code
 // var messages = document.getElementById('messages');

@@ -1,5 +1,5 @@
 'use strict'
-import * as THREE from '../three.module.js';
+import * as THREE from '../three.module1.js';
 console.log('got into three meshline');
 if (!THREE) throw new Error('MeshLine requires three.js')
 console.log('found THREE in three meshline');

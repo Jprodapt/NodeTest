@@ -52,6 +52,14 @@ app.get('/threeLine', (req, res) => {
   res.sendFile(__dirname + '/ThreeLine.html');
 });
 
+app.get('/controls', (req, res) => {
+  res.sendFile(__dirname + '/Controls.html');
+});
+
+app.get('/controls1', (req, res) => {
+  res.sendFile(__dirname + '/Controls1.html');
+});
+
 app.get('/basketball1', (req, res) => {
   res.sendFile(__dirname + '/CourtMobile.html');
 });
@@ -105,8 +113,8 @@ function broadcastSocketIo(uuid) {
   });
 }
 
-server.listen(3000, () => {
-  console.log('listening on *:3000');
+server.listen(3001, () => {
+  console.log('listening on *:3001');
 });
 
 
