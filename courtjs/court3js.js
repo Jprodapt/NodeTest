@@ -520,6 +520,18 @@ var createKeys = function () {
     group.add(keysrightPlane1Mesh);
     group.add(keysleftPlane1Mesh);
 }
+var imagePlaneMesh;
+var createPlane = function (x, y, z, name){
+    var imagePlaneGeo = new THREE.PlaneGeometry(2, 2);
+    var imagePlaeMaterial = new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF,
+        side: THREE.DoubleSide
+    });
+    imagePlaneMesh = new THREE.Mesh(imagePlaneGeo, imagePlaeMaterial);
+    imagePlaneMesh.position.set(x, y, z);
+    imagePlaneMesh.name = 'imagePlaneMesh'+name;
+    group.add(imagePlaneMesh);
+}
 
 var printAllObjects = function () {
     var allMeshObjects = [];
@@ -572,6 +584,17 @@ controls.enabled = true;
 // controls.enableRotate = false;
 // controls.pan = false;
 controls.enableZoom = true;
+
+// var objects = [imagePlaneMesh];
+//
+// const dragControls = new DragControls(objects, camera, renderer.domElement)
+// dragControls.enabled = true;
+// dragControls.addEventListener('dragstart', function (event) {
+//     event.object.material.opacity = 1
+// })
+// dragControls.addEventListener('dragend', function (event) {
+//     event.object.material.opacity = 1
+// })
 
 // How far you can orbit vertically, upper and lower limits.
 // Range is 0 to Math.PI radians.
@@ -644,6 +667,7 @@ function createCourtComponents() {
     printAllObjects();
     setupDragDropForBackground();
     setupDragDropForCourt();
+
 }
 
 createCourtComponents();
@@ -796,6 +820,81 @@ function setupDragDropForCourt() {
     }
 
 }
+
+
+
+const logo_input_court = document.querySelector("#file-input-courtLogo");
+
+logo_input_court.addEventListener("click", function () {
+    $("#logoSelector").modal('show');
+});
+
+const leftKeys  = document.querySelector("#leftKeys");
+
+leftKeys.addEventListener("change", function () {
+    applyLogo(this);
+});
+
+const leftCenterTop  = document.querySelector("#leftCenterTop");
+
+leftCenterTop.addEventListener("change", function () {
+    applyLogo(this);
+});
+const leftCenterBottom  = document.querySelector("#leftCenterBottom");
+
+leftCenterBottom.addEventListener("change", function () {
+    applyLogo(this);
+});
+const rightKeys  = document.querySelector("#rightKeys");
+
+rightKeys.addEventListener("change", function () {
+    applyLogo(this);
+});
+const rightCenterTop  = document.querySelector("#rightCenterTop");
+
+rightCenterTop.addEventListener("change", function () {
+    applyLogo(this);
+});
+const rightCenterBottom  = document.querySelector("#rightCenterBottom");
+
+rightCenterBottom.addEventListener("change", function () {
+    applyLogo(this);
+});
+
+function applyLogo(inputObject){
+    // alert(inputObject.id);
+    const reader = new FileReader();
+    if(inputObject.id=="leftKeys")
+        createPlane(-2.5, 0.1, 0.05, "leftKeys");
+    if(inputObject.id=="leftCenterTop")
+        createPlane(3.2, 3.2, 0.05, "leftCenterTop");
+    if(inputObject.id=="leftCenterBottom")
+        createPlane(3.2, -3.2, 0.05,"leftCenterBottom");
+    if(inputObject.id=="rightKeys")
+        createPlane(12.5, 0.1, 0.05, "rightKeys");
+    if(inputObject.id=="rightCenterTop")
+        createPlane(6.8, 3.2, 0.05, "rightCenterTop");
+    if(inputObject.id=="rightCenterBottom")
+        createPlane(6.8, -3.2, 0.05, "rightCenterBottom");
+    reader.addEventListener("load", () => {
+        const uploaded_image = reader.result;
+        imagePlaneMesh.material.map = new THREE.TextureLoader().load(uploaded_image);
+    });
+    reader.readAsDataURL(inputObject.files[0]);
+    $("#logoSelector").modal('hide');
+}
+
+const removeAllLogos  = document.querySelector("#removeAllLogos");
+removeAllLogos.addEventListener("click", function () {
+    const logoMeshNames = ["leftKeys", "leftCenterTop", "leftCenterBottom", "rightKeys", "rightCenterTop", "rightCenterBottom"];
+    logoMeshNames.forEach(element => {
+        const selectedObject = scene.getObjectByName('imagePlaneMesh' + element);
+        group.remove( selectedObject );
+    });
+    $("#logoSelector").modal('hide');
+});
+
+
 
 
 

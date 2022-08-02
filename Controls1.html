@@ -1,106 +1,96 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Three.js TypeScript Tutorials by Sean Bradley : https://sbcode.net/threejs</title>
-        <link rel="stylesheet" href="/stylesheets/style.css" />
-        <style>
-            body {
-                overflow: hidden;
-                margin: 0px;
-            }
+<head>
+    <title>Three.js TypeScript Tutorials by Sean Bradley : https://sbcode.net/threejs</title>
+    <meta name="author" content="Sean Bradley" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <style>
+        body {
+            overflow: hidden;
+            margin: 0px;
+        }
+    </style>
+    <!-- Import maps polyfill -->
+    <!-- Remove this when import maps will be widely supported -->
+    <script async src="./utils/es-module-shims.js"></script>
 
-            #instructions {
-                color: white;
-                position: absolute;
-                left: 50%;
-                top: 10px;
-                margin-left: -120px;
-                font-family: monospace;
-            }
-        </style>
-        <!-- Import maps polyfill -->
-        <!-- Remove this when import maps will be widely supported -->
-        <script async src="./utils/es-module-shims.js"></script>
-
-        <script type="importmap">
+    <script type="importmap">
             {
                 "imports": {
-                    "three": "../three.module1.js"
+                    "three": "../three.module1.js",
+                    "three/examples/jsm/controls/DragControls": "../DragControls.js"
                 }
             }
         </script>
-    </head>
+</head>
 
-    <body>
-        <a href="/view_source/transformcontrols.html" id="vwSrcLink" target="_blank">&lt;&gt;</a>
-        <div id="instructions">
-            G : Move&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R : Rotate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S : Scale
-        </div>
-        <script type="module">
-            import * as THREE from 'three'
-            import { TransformControls } from '../TransformControls.js';
+<body>
+<a href="/view_source/dragcontrols.html" id="vwSrcLink" target="_blank">&lt;&gt;</a>
+<script type="module">
+    import * as THREE from 'three'
+    import { DragControls } from 'three/examples/jsm/controls/DragControls'
 
-            const scene = new THREE.Scene()
-            //const axesHelper = new THREE.AxesHelper(5)
-            //scene.add(axesHelper)
-            const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000)
-            // Create the camera
-            // let HEIGHT = window.innerHeight;
-            // let WIDTH = window.innerWidth;
-            // var aspectRatio = WIDTH / HEIGHT;
-            // var fieldOfView = 40;
-            // var nearPlane = 5;
-            // var farPlane = 1000;
-            // var camera = new THREE.PerspectiveCamera(
-            //     fieldOfView,
-            //     aspectRatio,
-            //     nearPlane,
-            //     farPlane
-            // );
-            const renderer = new THREE.WebGLRenderer()
-            renderer.setSize(window.innerWidth, window.innerHeight)
-            document.body.appendChild(renderer.domElement)
-            renderer.domElement.ondragstart = function (event) {
-                event.preventDefault()
-                return false
-            }
-            const geometry = new THREE.PlaneGeometry(0.5, 0.5)
-            const material = new THREE.MeshBasicMaterial( { color: 0x9b1c1c,
-                side: THREE.DoubleSide} );
-            const cube = new THREE.Mesh(geometry, material)
-            cube.position.set(0.0, 0.0, 0.0);
-            // cube.position.set(-7.0, -44.5, 30);
-            // cube.scale.set(1.35, 0.65, 0.5);
-            scene.add(cube)
-            const controls = new TransformControls(camera, renderer.domElement)
-            controls.attach(cube)
-            scene.add(controls)
-            document.addEventListener('keydown', function (event) {
-                switch (event.key) {
-                    case 'g':
-                        controls.setMode('translate')
-                        break
-                    // case 'r':
-                    //     controls.setMode('rotate')
-                    //     break
-                    case 's':
-                        controls.setMode('scale')
-                        break
-                }
-            })
-            camera.position.z = 2.5
-            // camera.position.x = 0;
-            // camera.position.y = -60;
-            // camera.position.z = 50;
+    const scene = new THREE.Scene()
+    var light = new THREE.PointLight()
+    light.position.set(10, 10, 10)
+    scene.add(light)
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+    const renderer = new THREE.WebGLRenderer()
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    document.body.appendChild(renderer.domElement)
+    // const geometry = new THREE.BoxGeometry()
+    // const material = [
+    //     new THREE.MeshPhongMaterial({ color: 0xff0000, transparent: true }),
+    //     new THREE.MeshPhongMaterial({ color: 0x00ff00, transparent: true }),
+    //     new THREE.MeshPhongMaterial({ color: 0x0000ff, transparent: true }),
+    // ]
+    // const cubes = [
+    //     new THREE.Mesh(geometry, material[0]),
+    //     new THREE.Mesh(geometry, material[1]),
+    //     new THREE.Mesh(geometry, material[2]),
+    // ]
+    // cubes[0].position.x = -2
+    // cubes[1].position.x = 0
+    // cubes[2].position.x = 2
+    //cubes.forEach((c) => scene.add(c))
 
-            var animate = function () {
-                requestAnimationFrame(animate)
-                render()
-            }
-            function render() {
-                renderer.render(scene, camera)
-            }
-            animate()
-        </script>
-    </body>
+    var imagePlaneGeo = new THREE.PlaneGeometry(2, 2);
+    var imagePlaeMaterial = new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF,
+        side: THREE.DoubleSide
+    });
+    var imagePlaneMesh = new THREE.Mesh(imagePlaneGeo, imagePlaeMaterial);
+    imagePlaneMesh.position.set(0, 0, 0);
+    imagePlaneMesh.name = 'imagePlaneMesh';
+    scene.add(imagePlaneMesh);
+
+    var objects = [imagePlaneMesh];
+
+    const controls = new DragControls(objects, camera, renderer.domElement)
+    controls.addEventListener('dragstart', function (event) {
+        event.object.material.opacity = 1
+    })
+    controls.addEventListener('dragend', function (event) {
+        event.object.material.opacity = 1
+    })
+    camera.position.z = 2.5
+    window.addEventListener('resize', onWindowResize, false)
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight
+        camera.updateProjectionMatrix()
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        render()
+    }
+
+    var animate = function () {
+        requestAnimationFrame(animate)
+       //controls.update()
+        render()
+    }
+    function render() {
+        renderer.render(scene, camera)
+    }
+    animate()
+</script>
+</body>
 </html>
