@@ -864,19 +864,19 @@ rightCenterBottom.addEventListener("change", function () {
 function applyLogo(inputObject){
     // alert(inputObject.id);
     const reader = new FileReader();
-    if(inputObject.id=="leftKeys")
-        createPlane(-2.5, 0.1, 0.05, "leftKeys");
-    if(inputObject.id=="leftCenterTop")
-        createPlane(3.2, 3.2, 0.05, "leftCenterTop");
-    if(inputObject.id=="leftCenterBottom")
-        createPlane(3.2, -3.2, 0.05,"leftCenterBottom");
-    if(inputObject.id=="rightKeys")
-        createPlane(12.5, 0.1, 0.05, "rightKeys");
-    if(inputObject.id=="rightCenterTop")
-        createPlane(6.8, 3.2, 0.05, "rightCenterTop");
-    if(inputObject.id=="rightCenterBottom")
-        createPlane(6.8, -3.2, 0.05, "rightCenterBottom");
     reader.addEventListener("load", () => {
+        if(inputObject.id=="leftKeys")
+            createPlane(-2.5, 0.1, 0.05, "leftKeys");
+        if(inputObject.id=="leftCenterTop")
+            createPlane(3.2, 3.2, 0.05, "leftCenterTop");
+        if(inputObject.id=="leftCenterBottom")
+            createPlane(3.2, -3.2, 0.05,"leftCenterBottom");
+        if(inputObject.id=="rightKeys")
+            createPlane(12.5, 0.1, 0.05, "rightKeys");
+        if(inputObject.id=="rightCenterTop")
+            createPlane(6.8, 3.2, 0.05, "rightCenterTop");
+        if(inputObject.id=="rightCenterBottom")
+            createPlane(6.8, -3.2, 0.05, "rightCenterBottom");
         const uploaded_image = reader.result;
         imagePlaneMesh.material.map = new THREE.TextureLoader().load(uploaded_image);
     });
