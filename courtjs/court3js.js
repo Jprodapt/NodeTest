@@ -104,29 +104,16 @@ function socketEmitCommon() {
     socket.emit(uuidCookie, allMeshObjects);
 }
 
-
+var courtColorController = null;
 const renderControls = new function () {
     const gui = new GUI();
+
     this.addControls = function () {
 
-        // gui.addColor(obj, 'Left half color').onChange(value => {
-        //     plane1Mesh.material.color = new THREE.Color(value);
-        //     renderer.render(scene, camera);
-        //     socketEmitCommon();
-        // });;
-
-        // gui.addColor(obj, 'Right half color').onChange(value => {
-        //     plane2Mesh.material.color = new THREE.Color(value);
-        //     renderer.render(scene, camera);
-        //     socket.emit(uuidCookie, {
-        //         "meshName": "plane2Mesh",
-        //         "value": value
-        //     });
-        // });;
         var courtColor = {
             "Court color": '#0096FF'
         }
-        gui.add(courtColor, 'Court color', courtColors).onChange(value => {
+        courtColorController = gui.add(courtColor, 'Court color', courtColors).onChange(value => {
             plane1Mesh.material.color = new THREE.Color(value);
             plane2Mesh.material.color = new THREE.Color(value);
             renderer.render(scene, camera);
@@ -232,8 +219,8 @@ var hoopLeftPlane1Mesh, hoopRightPlane1Mesh;
 const createCenterCourt = function () {
     var geometry1 = new THREE.PlaneGeometry(10, 10);
     //var material1 = new THREE.MeshBasicMaterial({ color: 0x2c9fd8, side: THREE.DoubleSide });
-    var texture1 = new THREE.TextureLoader().load('courtTexture/outdoor_tile1_color.jpg');
-    texture1.name = 'courtTexture/outdoor_tile1_color.jpg';
+    var texture1 = new THREE.TextureLoader().load('courtTexture/outdoor_tile1.jpg');
+    texture1.name = 'courtTexture/outdoor_tile1.jpg';
     texture1.wrapS = THREE.RepeatWrapping;
     texture1.wrapT = THREE.RepeatWrapping;
     texture1.repeat.set( 4, 4 );
@@ -700,6 +687,12 @@ function changeBackground() {
             texture1.wrapS = THREE.RepeatWrapping;
             texture1.wrapT = THREE.RepeatWrapping;
             texture1.repeat.set( 4, 4 );
+            courtColorController.enable( true ); // disable
+        }
+        if(lastSplit.indexOf('wood')===0){
+            plane1Mesh.material.color=new THREE.Color();
+            plane2Mesh.material.color=new THREE.Color();
+            courtColorController.enable( false ); // enable
         }
         texture1.name = "courtTexture/" + lastSplit;
         plane1Mesh.material.map = texture1;
@@ -829,60 +822,105 @@ logo_input_court.addEventListener("click", function () {
     $("#logoSelector").modal('show');
 });
 
-const leftKeys  = document.querySelector("#leftKeys");
+function test(x, y){
+    console.log('clicked at: ' + x + ', ' + y + ' (x,y)');
+}
 
-leftKeys.addEventListener("change", function () {
-    applyLogo(this);
-});
+const logo_image = document.querySelector('#myImage');
 
-const leftCenterTop  = document.querySelector("#leftCenterTop");
+logo_image.addEventListener("click", function (evt) {
+    // $("#logoSelector").modal('show');
+    var jThis               = $(this);
+    var offsetFromParent    = jThis.position ();
+    var topThickness        = (jThis.outerHeight(true) - jThis.height() ) / 2;
+    var leftThickness       = (jThis.outerWidth (true) - jThis.width () ) / 2;
 
-leftCenterTop.addEventListener("change", function () {
-    applyLogo(this);
-});
-const leftCenterBottom  = document.querySelector("#leftCenterBottom");
+    //--- (x,y) coordinates of the mouse click relative to the image.
+    var mouseX                   = evt.pageX - offsetFromParent.left - leftThickness;
+    var mouseY                   = evt.pageY - offsetFromParent.top  - topThickness;
 
-leftCenterBottom.addEventListener("change", function () {
-    applyLogo(this);
-});
-const rightKeys  = document.querySelector("#rightKeys");
+    //store beginning x and y plus widht and height in the object
+    var leftKeys = {x:663, y:89, w:34, h: 29};
+    var leftCenterTop = {x:759, y:40, w:34, h: 29};
+    var leftCenterBottom = {x:759, y:140, w:34, h: 29};
+    var rightCenterTop = {x:821, y:40, w:34, h: 29};
+    var rightCenterBottom = {x:822, y:140, w:34, h: 29};
+    var rightKeys = {x:925, y:88, w:34, h: 29};
 
-rightKeys.addEventListener("change", function () {
-    applyLogo(this);
-});
-const rightCenterTop  = document.querySelector("#rightCenterTop");
+    if ((mouseX > leftKeys.x) && (mouseX < leftKeys.x+leftKeys.w) &&
+        (mouseY > leftKeys.y) && (mouseY < leftKeys.y+leftKeys.h)) {
+        var inputType = document.getElementById("hiddenInput");
+        inputType.innerText= "leftKeys";
+        applyLogo(inputType);
+    }
 
-rightCenterTop.addEventListener("change", function () {
-    applyLogo(this);
-});
-const rightCenterBottom  = document.querySelector("#rightCenterBottom");
+    if ((mouseX > leftCenterTop.x) && (mouseX < leftCenterTop.x+leftCenterTop.w) &&
+        (mouseY > leftCenterTop.y) && (mouseY < leftCenterTop.y+leftCenterTop.h)) {
+        var inputType = document.getElementById("hiddenInput");
+        inputType.innerText= "leftCenterTop";
+        applyLogo(inputType);
+    }
 
-rightCenterBottom.addEventListener("change", function () {
-    applyLogo(this);
+    if ((mouseX > leftCenterBottom.x) && (mouseX < leftCenterBottom.x+leftCenterBottom.w) &&
+        (mouseY > leftCenterBottom.y) && (mouseY < leftCenterBottom.y+leftCenterBottom.h)) {
+        var inputType = document.getElementById("hiddenInput");
+        inputType.innerText= "leftCenterBottom";
+        applyLogo(inputType);
+    }
+
+    if ((mouseX > rightCenterTop.x) && (mouseX < rightCenterTop.x+rightCenterTop.w) &&
+        (mouseY > rightCenterTop.y) && (mouseY < rightCenterTop.y+rightCenterTop.h)) {
+        var inputType = document.getElementById("hiddenInput");
+        inputType.innerText= "rightCenterTop";
+        applyLogo(inputType);
+    }
+
+    if ((mouseX > rightCenterBottom.x) && (mouseX < rightCenterBottom.x+rightCenterBottom.w) &&
+        (mouseY > rightCenterBottom.y) && (mouseY < rightCenterBottom.y+rightCenterBottom.h)) {
+        var inputType = document.getElementById("hiddenInput");
+        inputType.innerText= "rightCenterBottom";
+        applyLogo(inputType);
+    }
+
+    if ((mouseX > rightKeys.x) && (mouseX < rightKeys.x+rightKeys.w) &&
+        (mouseY > rightKeys.y) && (mouseY < rightKeys.y+rightKeys.h)) {
+        var inputType = document.getElementById("hiddenInput");
+        inputType.innerText= "rightKeys";
+        applyLogo(inputType);
+    }
+
+    console.log('User clicked at: ' + mouseX + ', ' + mouseY + ' (x,y)');
 });
 
 function applyLogo(inputObject){
-    // alert(inputObject.id);
+    inputObject.click();
+    $("#logoSelector").modal('hide');
+}
+
+
+var inputFileType = document.getElementById("hiddenInput");
+inputFileType.addEventListener("change", function () {
+   console.log(this.files[0].name+"  "+this.innerText);
     const reader = new FileReader();
     reader.addEventListener("load", () => {
-        if(inputObject.id=="leftKeys")
+        if(this.innerText=="leftKeys")
             createPlane(-2.5, 0.1, 0.05, "leftKeys");
-        if(inputObject.id=="leftCenterTop")
+        if(this.innerText=="leftCenterTop")
             createPlane(3.2, 3.2, 0.05, "leftCenterTop");
-        if(inputObject.id=="leftCenterBottom")
+        if(this.innerText=="leftCenterBottom")
             createPlane(3.2, -3.2, 0.05,"leftCenterBottom");
-        if(inputObject.id=="rightKeys")
+        if(this.innerText=="rightKeys")
             createPlane(12.5, 0.1, 0.05, "rightKeys");
-        if(inputObject.id=="rightCenterTop")
+        if(this.innerText=="rightCenterTop")
             createPlane(6.8, 3.2, 0.05, "rightCenterTop");
-        if(inputObject.id=="rightCenterBottom")
+        if(this.innerText=="rightCenterBottom")
             createPlane(6.8, -3.2, 0.05, "rightCenterBottom");
         const uploaded_image = reader.result;
         imagePlaneMesh.material.map = new THREE.TextureLoader().load(uploaded_image);
     });
-    reader.readAsDataURL(inputObject.files[0]);
-    $("#logoSelector").modal('hide');
-}
+    reader.readAsDataURL(this.files[0]);
+});
+
 
 const removeAllLogos  = document.querySelector("#removeAllLogos");
 removeAllLogos.addEventListener("click", function () {
