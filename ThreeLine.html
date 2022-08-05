@@ -1,0 +1,76 @@
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r119/three.min.js"></script>
+    <script src="https://unpkg.com/threejs-meshline@2.0.11/src/index.js"></script>
+    <title>Test</title>
+</head>
+<body>
+
+<script>
+    container = document.createElement('div');
+    document.body.appendChild(container);
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+    camera.position.set(0, 0, 150);
+    scene = new THREE.Scene();
+    scene.add(camera);
+    renderer = new THREE.WebGLRenderer({
+        clearAlpha: 1
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xcaffee, 1);
+    document.body.appendChild(renderer.domElement);
+
+    const group = new THREE.Group();
+    group.position.set(-11, -28.5, 1);
+    group.scale.set(2.55, 1.2, 1.5);
+
+
+
+
+    let points = [];
+    points.push( new THREE.Vector3(-100, 0, 0 ) );
+    points.push( new THREE.Vector3( 50, 0, 0 ) );
+    const line = new MeshLine();
+    line.setVertices(points);
+    const material = new MeshLineMaterial( {lineWidth: 5});
+
+    const mesh = new THREE.Mesh( line, material );
+
+
+    const curveRight = new THREE.EllipseCurve(
+        10, 0, // ax, aY
+        10.5, 10.5, // xRadius, yRadius
+        0.5 * Math.PI, 1.5 * Math.PI, // aStartAngle, aEndAngle
+        false, // aClockwise
+        0 // aRotation
+    );
+    const curveRPoints = curveRight.getPoints(100);
+    const curveRGeometry = new THREE.BufferGeometry().setFromPoints(curveRPoints);
+    const curveRMaterial = new MeshLineMaterial({
+        lineWidth: 0.5, color:0x000000
+    });
+
+    var lineMesh = new MeshLine();
+    lineMesh.setGeometry( curveRGeometry);
+
+    // Create the final object to add to the scene
+    const ellipseRight = new THREE.Mesh(lineMesh, curveRMaterial);
+
+
+
+    group.add(ellipseRight);
+    scene.add(group);
+    //scene.add( mesh );
+    renderer.render( scene, camera );
+
+    animate();
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+
+</script>
+</body>
+</html>

@@ -2,7 +2,17 @@
 <html>
 
 <head>
-    <title>Socket.IO chat</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css">
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <title>Basketball Court</title>
     <style>
         body {
             margin: 0;
@@ -35,7 +45,7 @@
             outline: none;
         }
 
-        #form>button {
+        #form > button {
             background: #333;
             border: none;
             padding: 0 1rem;
@@ -51,49 +61,472 @@
             padding: 0;
         }
 
-        #messages>li {
+        #messages > li {
             padding: 0.5rem 1rem;
         }
 
-        #messages>li:nth-child(odd) {
+        #messages > li:nth-child(odd) {
             background: #efefef;
         }
-        canvas {
-			display: block;
-			width: 1024px;
-			height: 800px;
-		}
 
-		#newWindow {
-			display: block;
-			position: absolute;
-			bottom: 0.3em;
-			left: 0.5em;
-			color: #fff;
-		}
+        canvas {
+            display: block;
+            width: 1024px;
+            height: 800px;
+        }
+
+        #newWindow {
+            display: block;
+            position: absolute;
+            bottom: 0.3em;
+            left: 0.5em;
+            color: #fff;
+        }
+
+        .container-slider {
+            /* height: 200px; */
+            /* height:100%; */
+            width: 100%;
+        }
+
+        .image-upload > input {
+            display: none;
+        }
+
+        /* #holder {
+            border: 1px dashed #ccc;
+            width: 175px;
+            height: 50px;
+            margin: 0px auto;
+        } */
+
+        #holder.hover {
+            border: 10px dashed #333;
+        }
+
+        [aria-labelledby~=lil-gui-name] {
+            display: none;
+        }
+
+        .modal-header,
+        h4,
+        .close {
+            background-color: #5cb85c;
+            color: white !important;
+            text-align: center;
+            font-size: 30px;
+        }
+
+        .modal-footer {
+            background-color: #f9f9f9;
+        }
+
+        .chat_text {
+            position: absolute;
+            right: 15%;
+            bottom: 20px;
+            top: 80%;
+            left: 15%;
+            z-index: 10;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            color: #FFFFFF;
+            text-align: center;
+        }
     </style>
 
 
-    <script type="importmap">{
-    "imports": {
-        "three": "https://threejs.org/build/three.module.js", 
-        "http": "https://github.com/nodejs/node/blob/v17.0.0/lib/http.js",
-        "socket.io-client": "https://cdn.socket.io/4.4.1/socket.io.esm.min.js"
-    }
-}</script>
+    <script type="module" src="courtjs/court3js.js"></script>
+    <!-- <script type="module" src="courtjs/THREE.MeshLine.js"></script>  -->
+
+    <script>
+        function ValidateEmail(mail) {
+
+            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+                return (true)
+            }
+            alert("You have entered an invalid email address!")
+            return (false)
+        }
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        sendEmail = async (data) => {
+            const location = window.location.hostname;
+            const port = window.location.port;
+
+            const settings = {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    emailId: data,
+                    url: `http://${location}:${port}/basketball?id=` + getCookie('uuidCookie')
+                })
+            };
+            try {
+
+                const fetchResponse = await fetch(`http://${location}:${port}/api/sendEmail`, settings);
+                const data = await fetchResponse;
+                return data;
+            } catch (e) {
+
+                return e;
+            }
+        }
+
+        $(document).ready(function () {
+            $("#emailIdsButton").click(function () {
+
+                if (document.getElementById("emailIds").value) {
+                    const emailIdText = document.getElementById("emailIds").value;
+                    emailIds = emailIdText.split(';');
+
+                    emailIds.forEach(emailId => {
+                        if (ValidateEmail(emailId.trim())) {
+
+                            sendEmail(emailId);
+                        }
+                    });
+                }
+                $('#myModal').modal('hide');
+            });
+            $("#myBtn").click(function () {
+                $("#myModal").modal('show');
+            });
+
+        });
+
+        $(document).ready(function () {
+            $('input[aria-labelledby]').each(function (index, element) {
+                if (element.type == 'text') {
+                    element.style.display = 'none';
+                }
+            });
+        })
+        $(document).ready(function () {
+            $('#exampleModal').modal('show');
+        })
+
+        function OpenInNewTab(url) {
+            window.open(url, '_blank', 'height=500,width=500');
+        }
+
+    </script>
+
+
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://github.com/mrdoob/three.js/blob/master/examples/jsm/controls/DragControls.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
 </head>
 
 <body style='margin: 0px; background-color: #bbbbbb; overflow: hidden;'>
-    
-    <script type="module" src="courtjs/socketComm.js"></script>
-    <script type="module" src="courtjs/court3js.js"></script>
-   
+
+<!-- <script type="module" src="courtjs/socketComm.js"></script> -->
+<style>
+    /* .bgcontainer  .carousel-item{
+    width:10vw !important;
+} */
+    .bgcontainer img,
+    .textureContainer img {
+        height: 30vh;
+        /* width: 10vw !important; */
+        object-fit: cover;
+    }
+</style>
+
+<div class="main-container" style="position: relative;height: 500px;">
+
+
+    <!-- email modal  container-->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-body" style="padding:40px 50px;">
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="usrname"><span class="glyphicon glyphicon-user"></span> Enter email id(s).
+                                (Comma seperated for multiple)</label>
+                            <input type="text" class="form-control" id="emailIds" placeholder="Enter email">
+                        </div>
+
+                        <button type="button" id="emailIdsButton" class="btn btn-success btn-block"><span
+                                class="glyphicon glyphicon-off"></span> Send email
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="logoSelector" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-body" style="padding:40px 50px;">
+
+                    <div style="margin: 2ex; padding: 2ex; border: 1px solid green;">
+                        <img id="myImage" src="LogoLayout1.jpg" style="max-width: 100%; max-height: 100%;">
+                    </div>
+                    <button  type="button" id="removeAllLogos">Remove all logos</button>
+                    <input type="file" id="hiddenInput" style="display: none">
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <!-- Add image inside the body of modal -->
+                <div class="modal-body">
+                    <span>Few helpful gestures and tips to build your dream court </span>
+                    <img id="image" src="instructions.jfif" width="100%" height="200px"
+                         alt="Click on button"/>
+                    <ul>
+                        <li>You can upload images for the background and the court floor</li>
+                        <li>You can drag and drop images to change the background</li>
+                        <li>Click pics on your phone change use the upload icon next to the info icon to upload</li>
+                        <li>Use the controls on the right to change colors of your court</li>
+                        <li>Please click on the green icon below the left sliding images to view these instructions
+                            again
+                        </li>
+                    </ul>
+
+                </div>
+
+                <div>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="carousel-container">
+        <div class="d-none d-sm-block" id="holder"
+             style="width: 300px;left: 10px;top: 10px;position: absolute;border: 2px solid white;border-radius: 5px;overflow: hidden;box-shadow: 2px 2px 9px grey;">
+            <div class="container-slider bgcontainer">
+                <div class="divslider" style="background-color: black;">
+                    <div id="carouselExampleIndicators" data-interval="5000" class="carousel slide"
+                         data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img class="d-block w-100" src="carouselImages/1.jpg" width="100" height="100">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a background image/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="carouselImages/2.jpg" width="100" height="100">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a background image/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="carouselImages/3.jpg" width="100" height="100">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a background image/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="carouselImages/4.jpg" width="100" height="100">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a background image/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="carouselImages/5.jpg" width="100" height="100">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a background image/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="carouselImages/6.jpg" width="100" height="100">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a background image/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="carouselImages/7.jpg" width="100" height="100">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a background image/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="carouselImages/8.jpg" width="100" height="100">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a background image/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
+                           data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Anterior</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
+                           data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Próximo</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-upload">
+                <img src="infoIcon.jpg" data-toggle="modal" data-target="#exampleModal" width="60px">
+                <label for="file-input">
+                    <img src="uploadImage.jpg" style="width:50px"/>
+                </label>
+
+                <input id="file-input" type="file"/>
+
+            </div>
+
+        </div>
+
+        <div class="d-none d-sm-block" id="holderCourt"
+             style="width: 300px;position: absolute;left: 320px;top: 10px;border: 2px solid white;border-radius: 5px;overflow: hidden;box-shadow: 2px 2px 9px grey;">
+            <div class="container-slider textureContainer">
+                <div class="divslider" style="background-color: black;">
+                    <div id="carouselExampleIndicators2" data-interval="5000" class="carousel slide"
+                         data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#carouselExampleIndicators2" data-slide-to="0" class="active"></li>
+                            <li data-target="#carouselExampleIndicators2" data-slide-to="1"></li>
+                            <li data-target="#carouselExampleIndicators2" data-slide-to="2"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img class="d-block w-100" src="courtTexture/woodtexture1.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a court texture/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="courtTexture/woodtexture2.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a court texture/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="courtTexture/woodtexture3.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a court texture/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="courtTexture/woodtexture4.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a court texture/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block w-100" src="courtTexture/outdoor_tile1.jpg">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>Select a court texture/Drag and drop one from your desktop</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators2" role="button"
+                           data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Anterior</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators2" role="button"
+                           data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Próximo</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="image-upload">
+                <label for="file-input-courtTexture">
+                    <img src="uploadImage.jpg" style="width:50px"/>
+                </label>
+
+                <input id="file-input-courtTexture" type="file"/>
+            </div>
+        </div>
+
+        <div class="d-none d-sm-block" id="logoCourt"
+             style="width: 100px;position: absolute;left: 680px;top: 10px;border: 2px solid white;border-radius: 5px;overflow: hidden;box-shadow: 2px 2px 9px grey;">
+            <div class="image-upload" >
+                <label for="file-input-courtLogo">
+                    <img src="Logo.png" style="width:100px"/>
+                </label>
+                <input id="file-input-courtLogo" type="button"/>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-frame" style="position: absolute;top:30px;left:60%;cursor: pointer;">
+        <img src="chat.png" onclick="OpenInNewTab('https://cloud.callvu.net/private/mybrand/dreamCourt/');" width="120"
+             alt="chat icon" id="">
+        <div class="chat_text d-none d-md-block">
+            <p>Click here to video chat </p><br>
+        </div>
+    </div>
+
+
     <div id="viewport">
-        <canvas id="artifactCanvas">
+        <canvas id="artifactCanvas" style="width: 100%; height: 800px; touch-action: none; cursor: auto;">
         </canvas>
     </div>
+
+    <!--
+    <form id="form" action="">
+        <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <ul id="messages"></ul> -->
+
+</div>
+
 
 </body>
 
